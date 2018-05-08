@@ -1,0 +1,2446 @@
+Teabean [9:42 PM]
+Just a heads up, Thurman and I are going to try and convene an Arduino day next Monday before class at the Makerspace (hours TBD) if anybody would like to get a spot of hands-on experience with some of the stuff mentioned in class.
+
+If you've got an Arduino or Raspberry Pi (or some other micro controller) based project that you'd like to bring in to talk over, please do!
+
+Teabean [1:49 PM]
+Setting up a questions document if you wanted a place to park your queries while reading. Please initial your question if it's one that you would like to ask during class for the participation point. Uninitialed questions are up-for-grabs.
+
+Answers will also be placed here for reference, the ultimate goal being to get a response (one way or another) to all of your questions.
+
+https://docs.google.com/document/d/1Hjsjocl_wn0_NF15tbFOTNM17E9_V1Vb3JLUV8MlO90/edit?usp=sharing (edited)
+
+Teabean [1:53 PM]
+And if you find some spare time after the required readings, here's an article on processors that might be helpful:
+
+https://www.pcgamer.com/processor-architecture-101-the-heart-of-your-pc/
+pcgamer
+Processor Architecture 101 – the heart of your PC
+A short primer on CPU architecture fundamentals.
+https://cdn.mos.cms.futurecdn.net/YuvE8sLo7reeNGQf2bUuR5-1200-80.jpg
+
+Teabean [17 days ago]
+Go to:
+myuw.washington.edu
+Sign in with your credentials
+
+Go to:
+Bottom of splash page
+"Tools & Software: Learning Tools, Email, Directory..."
+
+Go to:
+"Email & UW NetID"
+>> Gmail
+Sign in with your credentials (again)
+
+Click on "COMPOSE" to generate a new email
+Provide requisite format to the subject line, etc.
+
+
+Teabean [17 days ago]
+^Unverified, I sent an email last night but have not received confirmation of delivery^
+Teabean [9:04 PM]
+For those looking to submit the assignment, note that it's in the "Assignments" tab on the course website, not the "Discussions" tab.
+
+Teabean [4:22 PM]
+Quarter course outline under construction over here:
+
+https://docs.google.com/spreadsheets/d/1OToMkUEVHtGBDuC1uivRM932y38iriHUfK70Ln46YSw/edit?usp=sharing
+
+Teabean [4:25 PM]
+Arduino day at the Makerspace the coming Monday (4/2) from 1:00 to start of class. Makerspace has Arduino components and boards, so you don't even need to bring anything.
+
+And because I promised @Kevin McCall, snacks and drinks will be provided. (edited)
+
+Teabean [10:35 PM]
+Quick sanity check, but as regards assignment 1, has anybody been able to get convex.cpp to compile right off the bat? (edited)
+
+Teabean [12 days ago]
+After a spot of research, it appears that particular environments (specifically MSVS) do not include the same standard libraries as found in the Linux environment. "sys/time.h", for instance, is supplanted by "time.h", though being different libraries they unfortunately do not behave exactly the same.
+
+Still working out the best solution, but it's probably going to involve just coding fully in Linux.
+
+
+Teabean [10:48 PM]
+And am I missing something else or is this:
+
+```#define DEBUG "yes, its in a debugging mode"```
+
+Just telling the preprocessor to replace "DEBUG" anywhere in the code with the string "yes, its in a debugging mode"...?
+
+https://msdn.microsoft.com/en-us/library/teas0593.aspx?f=255&MSPPError=-2147217396
+
+Teabean [1:04 PM]
+Running late to Arduinoing, stuck in a meeting, but I do have snacks. =P
+
+Teabean [2:03 AM]
+Lab 1, clean file straight from the course notebook, but with corrected/consistent indents:
+```#include <iostream>    // cout, cerr 
+#include <queue>       // stl queue 
+#include <sys/types.h> // fork, wait 
+#include <sys/wait.h>  // wait 
+#include <unistd.h>    // fork 
+#include <stdlib.h>    // for exit 
+
+using namespace std; 
+
+queue<int> pids;      // stores a list of processes from the parent to a leaf process 
+
+void recursive_creation( int leaves ) { 
+   if ( leaves > 1 ) { 
+      pids.push( getpid( ) ); 
+      // fork a left child 
+
+      // fork a right child
+
+      // wait for one of the children 
+
+      // wait for the other children 
+
+      exit ( 0 ); 
+   }
+   else { // I'm a leaf process 
+      while( pids.size( ) > 0 ) {  // print out a list of my ascendants 
+         cout << pids.front( ) << " "; 
+         pids.pop( ); 
+      }
+      cout << getpid( ) << endl;   // print out myself 
+      exit( 0 ); 
+   }
+}
+
+int main( int argc, char* argv[] ) {
+   // validate arguments
+   if ( argc != 2 ) {
+      cerr << "usage: lab1 #leaves" << endl;
+      return -1; 
+   }
+   int leaves = atoi( argv[1] );
+   if ( leaves < 1 ) {
+      cerr << "usage: lab1 #leaves" << endl;
+      cerr << "where #leaves >= 1" << endl;
+      return -1;
+   }
+   recursive_creation( leaves );
+   return 0;
+}```
+(edited)
+
+Teabean [2:39 AM]
+And Lab 1, clean file but with additional comments that reflect my understanding, just for discussion purposes.
+
+```#include <iostream>    // cout, cerr 
+#include <queue>       // stl queue 
+#include <sys/types.h> // fork, wait 
+#include <sys/wait.h>  // wait 
+#include <unistd.h>    // fork 
+#include <stdlib.h>    // for exit 
+
+using namespace std; 
+
+// Any time a process calls recursive_creation() with an argument greater than 1
+// that process' PID will be enqued. The result is stored here; a sequence of PID values
+queue<int> pids;
+
+void recursive_creation( int leaves ) {
+
+   // Non-leaf condition
+   if ( leaves > 1 ) {
+
+      // Enque the current PID (this will be a parent process)
+      pids.push( getpid( ) );
+
+
+
+// --- Start student code ---
+
+
+
+      // fork a left child (and somewhere have the child call recursive_creation(int))
+
+      // fork a right child (and somewhere have the child call recursive_creation(int))
+
+      // wait for left child to close
+
+      // wait for right child to close
+
+
+
+// --- End student code ---
+
+
+
+      // At this point, THIS process will close
+      exit ( 0 ); 
+   } // Closing if - Non-leaf condition handled - This will never be reached
+
+   // Leaf condition
+   else {
+      // Print out the queue of all parent processe IDs...
+      while( pids.size( ) > 0 ) { 
+         cout << pids.front( ) << " "; 
+         pids.pop( ); 
+      } // Closing while - All PIDs in queue have been used (couted)
+      // ... And print out THIS PID
+      cout << getpid( ) << endl;
+      // Then close this process
+      exit( 0 ); 
+   } // Closing else - Leaf condition handled
+
+} // Closing recursive_creation() - This will never be reached
+
+
+
+int main( int argc, char* argv[] ) {
+   // Argument validation - There must be 2 arguments, the filename and an int
+   if ( argc != 2 ) {
+      // Linux standard: "Usage" denotes the format of how a tool is invoked
+      cerr << "usage: lab1 #leaves" << endl;
+      // Return an error code
+      return -1; 
+   } // Closing if - Program invocations with arguments other than 2 handled
+
+   // Argument validation - Is the second argument (index 1) an int greater than 1?
+   int leaves = atoi( argv[1] );
+   if ( leaves < 1 ) {
+      cerr << "usage: lab1 #leaves" << endl;
+      cerr << "where #leaves >= 1" << endl;
+      return -1;
+   } // Closing if - The integer argument (number of leaves) is greater than 1
+
+   // Begin the recursive loop
+   recursive_creation( leaves );
+
+   // If a call to "exit()" causes process termination, this will not be reached
+   return 0;
+} // Closing main()```
+
+Teabean [6:01 AM]
+Yo, here's a proof-of concept demonstrating how to use the send() and recv() methods:
+
+Teabean [6:01 AM]
+added this C++ snippet: Pipe Test 
+
+//-------|---------|---------|---------|---------|---------|---------|---------|
+//
+// Pipe Experiment
+// pipe.cpp
+//
+//-------|---------|---------|---------|---------|---------|---------|---------|
+
+//-----------------------------------------------------------------------------|
+// Authorship
+//-----------------------------------------------------------------------------|
+//
+// Tim Lum
+// twhlum@gmail.com
+// Created:  2018.04.07
+// Modified: 2018.04.08
+//
+
+//-----------------------------------------------------------------------------|
+// File Description
+//-----------------------------------------------------------------------------|
+//
+// This file is an experiment with the fork() and pipe() methods in C++
+//
+
+//-----------------------------------------------------------------------------|
+// Package Files
+//-----------------------------------------------------------------------------|
+//
+// None
+//
+
+// Necessary for I/O operations
+#include <iostream>
+
+// Necessary for deque operations
+#include <deque>
+
+// Necessary for queue operations
+#include <queue>
+
+// Necessary for string operations
+#include <string>
+
+// Necessary for int to string conversions via streams
+#include <sstream>
+
+// Necessary for gettimeofday() operations
+#include <sys/time.h>
+
+// Necessary for Squareroot and Power functions
+#include <math.h>
+
+// Necessary for fork() and wait() operations
+#include <sys/types.h>
+
+// Necessary for wait() operations
+#include <sys/wait.h>
+
+// Necessary for fork() operations
+#include <unistd.h>
+
+// Additional includes per assignment:
+
+// Necessary for fork() and wait()
+#include <sys/types.h>
+
+// Necessary for wait()
+#include <sys/wait.h>
+
+// Necessary for fork() and pipe()
+#include <unistd.h>
+
+// Necessary for exit()
+#include <stdlib.h>
+
+// Necessary for perror()
+#include <stdio.h>
+
+using namespace std; 
+
+// Point class included for testing purposes
+class Point {
+   public:
+   int id;
+   double x, y;          // x and y coordinates
+   Point( ) {
+      x = 0.0;
+      y = 0.0;
+      id = 0;
+   } // Closing Point()
+   Point( double initX, double initY, int id ) {
+      this->x = initX;
+      this->y = initY;
+      this->id = id;
+   }
+   void print( ) {
+      printf( "x = %f .y = %f\n", x, y );
+   } // Closing print()
+}; // Closing Point{}
+
+// (+) --------------------------------|
+// #send()
+// C. Univ. of Wash. Bothell 2018 -----|
+// Desc:    Sends a deque to a destination process through a pipe File Descriptor (FD)
+// Params:  int arg1 - The file descriptor of a pipe
+//          deque<Point> arg2 - The deque to send
+// PreCons: NULL
+// PosCons: NULL
+// RetVal:  None
+// MetCall: NULL
+void send( int fd, deque<Point> &q ) {
+   cout << "send(): FD == " << fd << endl;
+   int size = q.size();
+   double x  [ size ];
+   double y  [ size ];
+   int    id [ size ];
+
+   // Serialize all deque items to x, y, and id arrays
+   cout << "send() - Serializing..." << endl;
+   for ( int i = 0 ; i < size ; i++ ) {
+      Point p = q.front();
+      x[i] = p.x;
+      y[i] = p.y;
+      id[i] = p.id;
+      q.pop_front();
+   }
+
+   // Send all data through a pipe
+   cout << "send() - Writing..." << endl;
+   write( fd, &size, sizeof(int));
+   write( fd, x, sizeof( double ) * size );
+   write( fd, y, sizeof( double ) * size );
+   write( fd, id, sizeof( int ) * size );
+} // Closing send()
+
+// (+) --------------------------------|
+// #recv()
+// C. Univ. of Wash. Bothell 2018 -----|
+// Desc:    Receives a deque from a source process through a pipe
+// Params:  int arg1 - The file descriptor of a pipe
+//          deque<Point> arg2 - The deque to load with received data
+// PreCons: NULL
+// PosCons: NULL
+// RetVal:  NULL
+// MetCall: NULL
+void recv( int fd, deque<Point> &q ) {
+   // Receive all data through a pipe
+   int size = 0;
+
+   // read (File descriptor, target variable, bit size of packet)
+   read(fd, &size, sizeof(int));
+   double x[size];
+   double y[size];
+   int id[size];
+   read(fd, x, sizeof(double)*size);
+   read(fd, y, sizeof(double)*size);
+   read(fd, id, sizeof(int)*size);
+
+   // de-serialized x, y, and id arrays to all deque items
+   for (int i = 0 ; i < size ; i++) {
+      Point *p = new Point( x[i], y[i], id[i]);
+      q.push_back(*p);
+   }
+} // Closing recv()
+
+
+// (+) --------------------------------|
+// #pipe_test()
+//-------------------------------------|
+// Desc:    NULL
+// Params:  NULL
+// PreCons: NULL
+// PosCons: NULL
+// RetVal:  NULL
+// MetCall: NULL
+deque<Point> pipe_test() {
+   cout << "Enumerating..." << endl;
+   enum channel {RECV_L = 3, SEND_L = 4, RECV_R = 5, SEND_R = 6};
+   cout << "Enum SEND_L   : " << SEND_L << endl;
+   cout << "Enum RECEIVE: " << RECV_L << endl;
+
+   // Generate pipe1
+   int pipe1[2];
+   pipe(pipe1);
+
+   deque<Point> lResult;
+
+   // Fork a left child
+   cout << "Forking Left..." << endl;
+   int lPID = fork();
+
+   // And if we're in the child process
+   if (lPID == 0 ) {
+      cout << "(L) Created! ( " << getpid() << " )" << endl;
+
+      // Close reception channel
+      cout << "(L) Closing pipe1[RECV_L]" << endl;
+      close (pipe1[RECV_L]);
+
+      // Make a sample deque
+      cout << "(L) Sample deque..." << endl;
+      Point* samplePtr = new Point;
+      deque<Point> sampleDeckL;
+      sampleDeckL.push_back(*samplePtr);
+
+      // Send the packet
+      cout << "(L) Sending deque..." << endl;
+      send(SEND_L, sampleDeckL);
+
+      // Close this process, its work is complete
+      cout << "(L) Closing." << endl;
+      exit(7);
+   }
+
+   // But if we're in the parent process...
+   else {
+      // Close sending
+      cout << "(CTRL) Closing pipe1[SEND_L]" << endl;
+      close (pipe1[SEND_L]);
+
+      // Receive the packet
+      cout << "(CTRL) Receiving..." << endl;
+      recv(RECV_L, lResult);
+      cout << "(CTRL) Received!" << endl;
+   }
+
+   // Generate pipe2
+   int pipe2[2];
+   pipe(pipe2);
+
+   deque<Point> rResult;
+
+   // Fork a right child
+   cout << "Forking Right..." << endl;
+   int rPID = fork();
+
+   // And if we're in the child process
+   if (rPID == 0 ) {
+      cout << "(R) Created! ( " << getpid() << " )" << endl;
+
+      // Close reception channel
+      cout << "(R) Closing pipe1[RECV_R]" << endl;
+      close (pipe2[RECV_R]);
+
+      // Make a sample deque
+      cout << "(R) Sample deque..." << endl;
+      Point* samplePtr = new Point(1, 1, 1);
+      deque<Point> sampleDeckR;
+      sampleDeckR.push_back(*samplePtr);
+
+      // Send the packet
+      cout << "(R) Sending deque..." << endl;
+      send(SEND_R, sampleDeckR);
+
+      // Close this process, its work is complete
+      cout << "(R) Closing." << endl;
+      exit(13);
+   }
+   // But if we're in the parent process...
+   else {
+      // Close sending
+      cout << "(CTRL) Closing pipe1[1] (R)" << endl;
+      close (pipe2[SEND_R]);
+
+      // Receive the packet
+      cout << "(CTRL) Receiving (R)..." << endl;
+      recv(RECV_R, rResult);
+      cout << "(CTRL) Received (R)!" << endl;
+   }
+
+   cout << "(CTRL) Waiting..." << endl;
+   wait(&lPID);
+   cout << "(CTRL) Closed: " << lPID << endl;
+   wait(&rPID);
+   cout << "(CTRL) Closed: " << rPID << endl;
+
+   cout << "Children closed (L & R)." << endl;
+   deque<Point> results;
+   results.push_back(lResult.front());
+   results.push_back(rResult.front());
+   return(results);
+
+} // Closing pipe_test()
+
+
+
+int main( int argc, char* argv[] ) {
+
+   deque<Point> resultDQ = pipe_test();
+
+   cout << "Results:" << endl;
+   resultDQ.at(0).print();
+   resultDQ.at(1).print();
+
+   return 0;
+} // Closing main()
+
+Teabean [6:14 AM]
+Notably, you may not need to be limited to only 0 and 1 for your send/receive channels. I ran it with 3, 4, 5, and 6 (for send-left, recv-left, send-right, recv-right, respectively) and it seems to process just fine.
+
+Still unclear as to how the wait() functions work, but it definitely seems to need a reference to the PID number (the child process handle) that it's waiting for. When it completes, it appears to replace the PID of the child process with... something? I mixed up the exit codes of the left and right, yet in my run, neither PID variable ended up storing the exit codes or the numbers of the PID that had closed.
+
+And finally, the calls themselves just take an int representing the File Descriptor (which I happen to think of as the channel) to which your pipe(s) are connected.
+
+So yeah! Depending on your program structure, this may or may not be of interest to you, but I hope it helps! (edited)
+
+Teabean [4:08 AM]
+added this C++ snippet: Pipe Test 2 
+
+//-------|---------|---------|---------|---------|---------|---------|---------|
+//
+// Pipe Experiment
+// pipe.cpp
+//
+//-------|---------|---------|---------|---------|---------|---------|---------|
+
+//-----------------------------------------------------------------------------|
+// Authorship
+//-----------------------------------------------------------------------------|
+//
+// Tim Lum
+// twhlum@gmail.com
+// Created:  2018.04.07
+// Modified: 2018.04.08
+//
+
+//-----------------------------------------------------------------------------|
+// File Description
+//-----------------------------------------------------------------------------|
+//
+// This file is an experiment with the fork() and pipe() methods in C++
+//
+
+//-----------------------------------------------------------------------------|
+// Package Files
+//-----------------------------------------------------------------------------|
+//
+// None
+//
+
+// Necessary for I/O operations
+#include <iostream>
+
+// Necessary for deque operations
+#include <deque>
+
+// Necessary for queue operations
+#include <queue>
+
+// Necessary for string operations
+#include <string>
+
+// Necessary for int to string conversions via streams
+#include <sstream>
+
+// Necessary for gettimeofday() operations
+#include <sys/time.h>
+
+// Necessary for Squareroot and Power functions
+#include <math.h>
+
+// Necessary for fork() and wait() operations
+#include <sys/types.h>
+
+// Necessary for wait() operations
+#include <sys/wait.h>
+
+// Necessary for fork() operations
+#include <unistd.h>
+
+// Additional includes per assignment:
+
+// Necessary for fork() and wait()
+#include <sys/types.h>
+
+// Necessary for wait()
+#include <sys/wait.h>
+
+// Necessary for fork() and pipe()
+#include <unistd.h>
+
+// Necessary for exit()
+#include <stdlib.h>
+
+// Necessary for perror()
+#include <stdio.h>
+
+using namespace std; 
+
+// Point class included for testing purposes
+class Point {
+   public:
+   int id;
+   double x, y;          // x and y coordinates
+   Point( ) {
+      x = 0.0;
+      y = 0.0;
+      id = 0;
+   } // Closing Point()
+   Point( double initX, double initY, int id ) {
+      this->x = initX;
+      this->y = initY;
+      this->id = id;
+   }
+   void print( ) {
+      printf( "x = %f .y = %f\n", x, y );
+   } // Closing print()
+}; // Closing Point{}
+
+// (+) --------------------------------|
+// #send()
+// C. Univ. of Wash. Bothell 2018 -----|
+// Desc:    Sends a deque to a destination process through a pipe File Descriptor (FD)
+// Params:  int arg1 - The file descriptor of a pipe
+//          deque<Point> arg2 - The deque to send
+// PreCons: NULL
+// PosCons: NULL
+// RetVal:  None
+// MetCall: NULL
+void send( int fd, deque<Point> &q ) {
+   int size = q.size();
+   double x  [ size ];
+   double y  [ size ];
+   int    id [ size ];
+
+   // Serialize all deque items to x, y, and id arrays
+   for ( int i = 0 ; i < size ; i++ ) {
+      Point p = q.front();
+      x[i] = p.x;
+      y[i] = p.y;
+      id[i] = p.id;
+      q.pop_front();
+   }
+
+   // Send all data through a pipe
+   write( fd, &size, sizeof(int));
+   write( fd, x, sizeof( double ) * size );
+   write( fd, y, sizeof( double ) * size );
+   write( fd, id, sizeof( int ) * size );
+} // Closing send()
+
+// (+) --------------------------------|
+// #recv()
+// C. Univ. of Wash. Bothell 2018 -----|
+// Desc:    Receives a deque from a source process through a pipe
+// Params:  int arg1 - The file descriptor of a pipe
+//          deque<Point> arg2 - The deque to load with received data
+// PreCons: NULL
+// PosCons: NULL
+// RetVal:  NULL
+// MetCall: NULL
+void recv( int fd, deque<Point> &q ) {
+   // Receive all data through a pipe
+   int size = 0;
+
+   // read (File descriptor, target variable, bit size of packet)
+   read(fd, &size, sizeof(int));
+   double x[size];
+   double y[size];
+   int id[size];
+   read(fd, x, sizeof(double)*size);
+   read(fd, y, sizeof(double)*size);
+   read(fd, id, sizeof(int)*size);
+
+   // de-serialized x, y, and id arrays to all deque items
+   for (int i = 0 ; i < size ; i++) {
+      Point *p = new Point( x[i], y[i], id[i]);
+      q.push_back(*p);
+   }
+} // Closing recv()
+
+
+// (+) --------------------------------|
+// #pipe_test()
+//-------------------------------------|
+// Desc:    NULL
+// Params:  NULL
+// PreCons: NULL
+// PosCons: NULL
+// RetVal:  NULL
+// MetCall: NULL
+deque<Point> pipe_test() {
+   cout << "Enumerating..." << endl;
+   enum channel {RECV_L = 3, SEND_L = 4, RECV_R = 5, SEND_R = 6};
+   cout << "Enum SEND_L   : " << SEND_L << endl;
+   cout << "Enum RECEIVE: " << RECV_L << endl;
+
+   // Generate pipe1
+   int pipe1[2];
+   pipe(pipe1);
+
+   deque<Point> lResult;
+
+   // Fork a left child
+   cout << "Forking Left..." << endl;
+   int lPID = fork();
+
+   // And if we're in the child process
+   if (lPID == 0 ) {
+      cout << "(L) Created! ( " << getpid() << " )" << endl;
+
+      // Close reception channel
+      cout << "(L) Closing pipe1[RECV_L]" << endl;
+      close (pipe1[RECV_L]);
+
+      // Make a sample deque
+      cout << "(L) Sample deque..." << endl;
+      Point* samplePtr  = new Point(0, 0, 0);
+      Point* samplePtr2 = new Point(1, 1, 1);
+      deque<Point> sampleDeckL;
+      sampleDeckL.push_back(*samplePtr);
+      sampleDeckL.push_back(*samplePtr2);
+
+      // Send the packet
+      cout << "(L) Sending deque..." << endl;
+      sleep(5);
+      send(SEND_L, sampleDeckL);
+
+      // Close this process, its work is complete
+      cout << "(L) Closing." << endl;
+      exit(0);
+   }
+
+   // But if we're in the parent process...
+   else {
+      // Close sending
+      cout << "(CTRL) Closing pipe1[SEND_L]" << endl;
+      close (pipe1[SEND_L]);
+   }
+
+   // Generate pipe2
+   int pipe2[2];
+   pipe(pipe2);
+
+   deque<Point> rResult;
+
+   // Fork a right child
+   cout << "Forking Right..." << endl;
+   int rPID = fork();
+
+   // And if we're in the child process
+   if (rPID == 0 ) {
+      cout << "(R) Created! ( " << getpid() << " )" << endl;
+
+      // Close reception channel
+      cout << "(R) Closing pipe1[RECV_R]" << endl;
+      close (pipe2[RECV_R]);
+
+      // Make a sample deque
+      cout << "(R) Sample deque..." << endl;
+      Point* samplePtr  = new Point(2, 2, 2);
+      Point* samplePtr2 = new Point(3, 3, 3);
+      deque<Point> sampleDeckR;
+      sampleDeckR.push_back(*samplePtr);
+      sampleDeckR.push_back(*samplePtr2);
+
+      // Send the packet
+      cout << "(R) Sending deque..." << endl;
+      sleep(5);
+      send(SEND_R, sampleDeckR);
+
+      // Close this process, its work is complete
+      cout << "(R) Closing." << endl;
+      exit(0);
+   }
+   // But if we're in the parent process...
+   else {
+      // Close sending
+      cout << "(CTRL) Closing pipe1[1] (R)" << endl;
+      close (pipe2[SEND_R]);
+
+   }
+
+   cout << "(CTRL) Waiting..." << endl;
+   wait(&lPID);
+   cout << "(CTRL) L Closed: " << lPID << endl;
+   wait(&rPID);
+   cout << "(CTRL) R Closed: " << rPID << endl;
+   cout << "Children closed (L & R)." << endl;
+
+
+   // Receive the packet
+   cout << "(CTRL) Receiving..." << endl;
+   recv(RECV_L, lResult);
+   cout << "(CTRL) Received!" << endl;
+
+   // Receive the packet
+   cout << "(CTRL) Receiving (R)..." << endl;
+   recv(RECV_R, rResult);
+   cout << "(CTRL) Received (R)!" << endl;
+
+
+
+
+
+
+
+
+
+   deque<Point> results;
+   results.push_back(lResult.front());
+   lResult.pop_front();
+   results.push_back(lResult.front());
+
+   results.push_back(rResult.front());
+   rResult.pop_front();
+   results.push_back(rResult.front());
+
+   return(results);
+
+} // Closing pipe_test()
+
+
+
+int main( int argc, char* argv[] ) {
+
+   deque<Point> resultDQ = pipe_test();
+
+   cout << "Results:" << endl;
+   resultDQ.at(0).print();
+   resultDQ.at(1).print();
+   resultDQ.at(2).print();
+   resultDQ.at(3).print();
+
+   return 0;
+} // Closing main()
+
+Teabean [4:10 AM]
+Correction to the previous pipe test; I added a sleep() to each of the processing calls on the left and right and the previous version blocked waiting for one to complete before proceeding to the next.
+
+This version corrects that. You should see a 5 second pause, then both results are available. If it's broken, it'll be a 5 second wait to complete the left, then a 5 second wait to complete the right.
+
+Teabean [4 days ago]
+As Prof. Brechner would say... "You know what that's like?" :smile:
+
+Teabean [3:35 PM]
+If you want to read the raw text output for errors, it's pretty easy on large point samples.
+
+All X and Y values will be very close to either 0 or 10000 and, oddly, there will be fewer of them as your point cloud approaches very high values. You can imagine that at infinite points constrained to x and y ranges of 0-10000, you'd end up with just four points; the corners.
+
+Hence, if you see any points that are not sticking close to the edge and corners, odds are very good that it's erroneous.
+
+Which brings me to another interesting point... My raw convex.cpp that I got from the site appears to generate bad outputs at large point sample sizes. -_-
+
+Anybody else getting that? (edited)
+
+Teabean [3 days ago]
+Yup, you have to add some forks based on argv[2] to spin up some additional parallel processes.
+
+Roughly speaking, if argv[2] is 2, then there should be 2 working processes running, each processing 1/2 the points.
+
+If argv[2] is 4, there should be 4 working processes running, each processing 1/4 the points.
+
+I say 'working' process because you can definitely have 'idle' processes in addition to that, but the idea is that the recursive Graham-scans are being run simultaneously.
+
+Teabean [10:40 PM]
+Yo, everybody! I have a potentially serious problem that I'd like some help verifying before bringing it up to the prof:
+
+First, taking your normal convex.cpp (the unmodified one we just got for the assignment), can you replace the 'if' statement at line 343 with this:
+
+  ```stringstream streamID;
+  stringstream streamX;
+  stringstream streamY;
+
+  if ( response == "y" ) {
+     for ( int j = 0 ; j < points.size() ; j++ ) {
+        streamID << points.at(j).id << endl;
+        streamX  << points.at(j).x << endl;
+        streamY  << points.at(j).y << endl;
+     }
+     cout << streamID.str() << endl;
+     cout << streamX.str() << endl;
+     cout << streamY.str() << endl;
+  }```
+
+Then #include <sstream> at the start. This modifies your output from the formatted print to a series of blocks which correspond to the IDs of all points, then the X coordinates of all points, then the Y coordinates of all points.
+```p1.id
+p2.id
+p3.id
+...
+pn.id
+
+p1.x
+p2.x
+p3.x
+...
+pn.x
+
+p1.y
+p2.y
+p3.y
+...
+pn.y```
+Now compile everything and crank the point count up around the 20000 mark. Run it and take the results.
+
+Then drop the results into your favorite spreadsheet program and plot them.
+
+```p1.x   |   p1.y
+p2.x   |   p2.y
+p3.x   |   p3.y
+...    |   ...
+pn.x   |   pn.y   <== Select cells, 'Insert", X-Y scatterplot with connecting lines```
+Is anybody else getting crap results like this: (edited)
+
+Teabean [10:41 PM]
+uploaded this image: convexcpp20000.png 
+
+
+
+Teabean [10:41 PM]
+In fact, just post your results if they're bad and I'll collate them to discuss with Prof. Parsons at the next office hours.
+If you do happen to get these results, I've found a hack workaround which is, at the end of your divide and conquer method, to just make one more recursive call to clean up the data. I'm at a loss at the moment for why that works but it seems to.
+
+I've noted that a single divide-merge-graham set of operations may remove some of the bad results, but not all of them (and successive sweeps of this sort don't seem to net further improvement) (edited)
+
+Teabean [10:44 PM]
+uploaded this image: image.png 
+
+
+Teabean [10:49 PM]
+Oh, and if your results from the class-material convex.cpp are good, could you post a copy of the .cpp? (edited)
+
+Teabean [1 day ago]
+Love it, Thurman, thank you so much; this is suuuuper helpful!
+
+
+
+Teabean [1 day ago]
+As a possible alternate (I'm trying to pack this into a shell script per the above at the moment...), here's a command line one-liner to try and accomplish similar results.
+
+```for x in {5..30}; do ./a.out $(($(($x/5))*5000)) 4 < response.txt | grep "Elapsed time"; done
+Elapsed time: 55566
+Elapsed time: 53237
+Elapsed time: 56253
+Elapsed time: 50828
+Elapsed time: 60909
+Elapsed time: 64427
+Elapsed time: 64688
+Elapsed time: 72619
+Elapsed time: 62003
+Elapsed time: 71766
+Elapsed time: 76589
+Elapsed time: 76783
+Elapsed time: 73206
+Elapsed time: 74543
+Elapsed time: 72801
+Elapsed time: 87327
+Elapsed time: 86285
+Elapsed time: 87957
+Elapsed time: 88969
+Elapsed time: 78097
+Elapsed time: 91580
+Elapsed time: 92070
+Elapsed time: 90986
+Elapsed time: 93421
+Elapsed time: 92315
+Elapsed time: 102650```
+(edited)
+
+
+
+Teabean [1 day ago]
+^^ Executes the program on 4 cores, 25 times, in sets of 5000 point increments.
+
+So the first set of 5 are the results from 5000 points, the next set of 5 are 10000, the next set are 15000, then 20000, then 25000 (edited)
+
+
+Teabean [1 day ago]
+Gotcha! XD
+Though, note that you may need to alter the "Elapsed time: " string if your output reads differently than mine (like, I think I capitalized the output where the base version doesn't):
+
+```for x in {5..30}; do ./a.out $(($(($x/5))*5000)) 4 < response.txt | grep "Elapsed time" | sed "s/Elapsed time: //g"; done```
+
+Teabean [11:00 AM]
+Setting up a shared document containing the discussion questions at the end of the chapters.
+
+https://docs.google.com/document/d/1EiNwcSl5E6vHPKkYQYWW6O9-S9Xi2YZg_SR-t5BggiY/edit?usp=sharing
+
+Teabean [11:01 AM]
+shared this file 
+
+Teabean [3:47 PM]
+You could attempt to pull the sleep() command out, but the thing that catches my eye is the (NULL) argument in wait().
+
+I thought it was supposed to receive an int address like:
+```int someInt;
+wait(&someInt);```
+
+I could be wrong, of course. You might also try a wait() with nothing in it and see what happens.
+In any case, wait() should just block the process until a child process closes.
+
+Once the child process closes, the parent will proceed past the wait() command and it should just hang at sleep() for 5 seconds. I don't see any logical problem with having both, as they'll execute in sequence. (edited)
+
+Teabean [3:55 PM]
+```int someInt;
+
+[Things happen here with a fork() somewhere]
+
+wait(&someInt);```
+
+Teabean [6:42 PM]
+Nope, it won't work from home unless you use the Big-IP VPN client provided by the UW.
+
+Teabean [6:43 PM]
+They basically whitelisted from where the lab can be connected to, so if anybody tries to connect from outside that, they can't. (edited)
+
+Teabean [6:43 PM]
+Lemme grab you a link for the Big-IP stuff
+Just follow the procedure here:
+http://www.lib.washington.edu/help/connect/husky-onnet
+
+Teabean [6:45 PM]
+It probably beats driving to campus. :stuck_out_tongue:
+
+No problemmo!
+
+Teabean [2:45 PM]
+Well, you all probably don't want to hear this at this late hour and so close to the exam, but I think I figured out why the course convex.cpp is broken...
+Yeah, it's not a small problem either.
+So some quick background about the Graham Scan... First, it normally requires that the points be sorted in a sort of polar sweeping fashion.
+
+Teabean [2:48 PM]
+Where if you imagine a line extending out from p0 along the X-axis and sweeping counterclockwise, that's the order in which the Graham-scan analysis needs to be performed.
+This because the scan only cares if it's turning left or right off any given point...
+And not having it pre-sorted in this fashion just causes the left-right analysis to generate erroneous results in certain point combinations.
+The course Graham-scan doesn't sort the points in this fashion; we just get a random point cloud. I won't go into too much detail, but that's why some of our end results can be fully convex but still in error.
+
+
+Teabean [2:51 PM]
+So to pre-sort it, we need the point order to look like this when it's fed to the Graham scan:
+
+Teabean [2:52 PM]
+At which point the result is this:
+
+Teabean [2:54 PM]
+Haven't gotten around to testing it on the parallelized processor, but that sorting of the start data did fix the concavity we were seeing in the baseline convex.cpp results.
+Oh, and as a last note, it's sort of important (that is, very convenient for a lot of the trig calculations) to start from the lowest-leftiest point as p0.
+
+Teabean [7:15 PM]
+Yeah, writing the sort didn't take that long; it was mostly figuring out that it was an issue related to the output. Honestly, I'm still not sure this is a workable solution as the results start doing crazy things when parallelized (the result is basically just the right convex hull for me at the moment).
+
+
+
+Teabean [7:17 PM]
+Which makes me think there's something up with the default merge() function.
+
+Teabean [7:18 PM]
+One would expect, yes. :smile:
+But alas, no, I sorted the data set at the beginning and it runs fine on one core. If it gets parallelized, the results are different.
+
+Teabean [7:19 PM]
+I'm just going to comment that this is a challenge of legacy codebases in my writeup. I literally don't have time for this at this point. :smile:
+
+
+
+Teabean [1:05 AM]
+YAHAHAHAH! I WIN! I QUIT! Goodnight! :slam::slam::slam:
+Tomorrow is hammering on exam study materials. Do check out the discussion guide I started if you haven't seen it already. It's got a significant portion of the discussion questions there and within the links at the top, including quite a few of the "official" answers to save you time scouring the interwebs.
+
+Also, do feel free to contribute, as it +is+ a discussion. :stuck_out_tongue:
+
+https://docs.google.com/document/d/1EiNwcSl5E6vHPKkYQYWW6O9-S9Xi2YZg_SR-t5BggiY/edit?usp=sharing
+
+Teabean [1:08 AM]
+shared this file 
+CSS503 - Exam Discussions
+Document from Google Drive
+
+EXAM 1 STUDY GUIDE:
+(Tea) :
+User Space: 
+  - Applications - Everything outside the kernel. All of it.
+Kernel:
+  - Process Manager - What tasks execute and when?
+  - Memory Manager - Ensures that applications have enough memory to run.
+  - File Manager - How is data partitioned, located, organized, accessed?
+  - I/O Manager - How does the kernel communicate with external components?
+(Tea) - <???> I'm very uncertain as to what is meant by this buuuut…
+GUI / CLI - 
+Single-Processor Systems - 
+Multiprocessor Systems - 
+Clustered Systems - 
+Multiprogramming - 
+Time sharing / multitasking - 
+Multithreading / Hyperthreading - 
+Single Mode OS - 
+Dual Mode OS - 
+Multi Mode OS - 
+(Tea) - Computer component overview:
+
+(Tea) - Single processor memory architecture:
+
+(Tea) - Single processor CPU architecture (note registers - sometimes L1 cache is on there too):
+
+(Tea) - Multiprocessor memory architecture:
+
+(Tea) - Multicore (quadcore) memory architecture:
+
+(Tea) - Interrupt - A signal to the processor sent by hardware or software indicating an event requiring the interruption of the current code the processor is executing. The processor responds by saving its state and suspending current activites, then executes an interrupt handler (or interrupt service routine or ISR) to handle the event. Upon conclusion of the interrupt handler, the prior state and activity is restored and processing resumes.
+
+(Tea) - Synchronous - Occuring at set times or intervals. Most process routines we've written so far are of this sort, with one command occurring after another.
+
+(Tea) - Asynchronous (aka 'async') - Able to occur at any time or occurring in an indeterminate order. Most device communications are asynchronous.
+(Tea) - Direct Memory Access - A feature of some computer systems that allows certain hardware subsystems to access main system memory (RAM) independent of the central processing unit (CPU). Usually requires limited setup (defining start conditions like memory addresses and read quantities) by the CPU, but thereafter frees the CPU to perform other tasks outside of memory accessing.
+(Tea) - MS-DOS structure
+
+
+(Tea) - UNIX structure
+
+
+(Tea) - Layered OS structure
+
+
+(Tea) - Microkernel structure
+
+(Tea) - Modular OS structure
+
+(Tea) - Hybrid OS structure (Mac OS-X)
+
+(Tea) - Hybrid OS structure (Google Android)
+
+(Tea) - Kernel mode - When active, the executing code has complete and unrestricted access to the underlying hardware. Code running in this mode can execute any instruction and reference any memory address.
+(Tea) - User mode - When active, the executing code has no direct access to hardware or memory. Code running in user mode can only make requests (via the system APIs) to the kernel.
+(Tea) - Method by which a process requests services from the OS kernel
+(Tea) - Shell - A command interpreter whose primary purpose is to get user commands and execute them.
+(Tea) - In UNIX, the shell is unable to process commands given to it directly (it is hollow, hence the analogy of the shell). It does, however, take the user command to search for a program (block of code), which it loads to memory and runs.
+(Tea) - A process is an instance of a computer program under execution.
+It contains the program code and its current activity.
+A process has at least 1 thread of execution, but may have more.
+(Tea) - Process States:
+Created - The process awaits admission to the "ready" state. Admission will be approved or delayed by a long-term, or admission, scheduler.
+
+(Matt) - New - The process has been created and can be added to the ready queue (managed by the long-term scheduler).
+
+(Tea) - Ready - The process has been loaded into main memory and is awaiting execution on a CPU (to be context switched onto the CPU by the dispatcher, or short-term scheduler). Process is in the 'ready queue'.
+
+(Tea) - Running (Kernel/User Mode) - Process has been chosen for execution and its instructions are being executed by a CPU (limit 1 process per CPU at a time).
+
+(Tea) - Waiting - The process cannot carry on without an external change in state or event.
+
+(Tea) - Terminated -  The underlying program is no longer executing, but it remains in the process table (zombie) until its parent calls the 'wait' system call to read its exit status. The process is then removed from the process table.
+
+(Tea) - Process Control Block (PCB) is a data structure in the operating system kernel containing the information needed to manage the scheduling of a particular process.
+(Tea) - Process Tree: A visualization of running processes that emphasizes the child-parent relationships among them. The root of the tree is init/systemd
+
+(Tea) - fork() : Duplicates the calling process in its entirety with the exception of the Process ID (PID) value.
+
+(Tea) - execlp() : Replaces the calling process image with a new process image. This has the effect of running a new program with the process ID of the calling process.
+
+(Tea) - pipe() : https://www.geeksforgeeks.org/pipe-system-call/
+Generates a 'pipe' object, which is a virtual file behaving as a FIFO queue. By default, its read and write 'ends' are connected to the calling process' cin and cout. After forking, if the appropriate ends are closed in the parent and child processes, then information may be passed between the processes by storing it to the pipe, then reading out of it.
+
+(Tea) - dup() : The dup() system call creates a copy of a file descriptor. If successful, then the original file descriptor and the dup() file descriptor may be used interchangeably, as they indicate the same memory address.
+
+(Tea) - exit() : Causes the process to enter a terminated state. It is a zombie here until wait() is called to read its exit status.
+(Tea) - Standard streams:
+0 == stdin: Standard input stream
+1 == stdout: Standard output stream
+2 == stderr: Standard error stream
+0, 1, and 2 are actually file descriptors. By sending data to a different numeric, data can be sent to a different file descriptor.
+
+
+
+(Tea) - 
+
+[mono-process does things]
+
+
+fork() => exec()
+if the parent:
+  [ continue doing things ]
+wait() // For the child to complete
+if the child:
+  exec()
+  [ do things ]
+  exit()
+
+(Tea) - The process of storing the state of a process or thread such that it can be restored and resumed from the same point later. Can be invoked in multitasking, interrupt handling, or user/kernel mode switching (certain OSes, not all of them).
+(Tea) - Pipe: A file utilized as a FIFO queue, wherein a child and parent process share the queue address and can read or write to the pipe/file (one or the other).
+(Tea) - Message passing: a technique for invoking behavior (i.e., running a program) on a computer. The invoking program sends a message to a process (which may be an actor or object) and relies on the process and the supporting infrastructure to select and invoke the actual code to run.
+(Tea) - Shared memory: Designating an area of shared memory between two programs. Normally prevented by the OS.
+(Tea) - The smallest sequence of programmed instructions that can be managed independently by a scheduler, which is typically a part of the operating system.[1] The implementation of threads and processes differs between operating systems, but in most cases a thread is a component of a process. Multiple threads can exist within one process, executing concurrently and sharing resources such as memory, while different processes do not share these resources. In particular, the threads of a process share its executable code and the values of its variables at any given time.
+(Tea) - Context switching between threads in the same process is typically faster than context switching between processes. Threads do not duplicate much of the process overhead (memory space), instead duplicating only those elements which are relevant the the thread execution.
+(Tea) A user thread (or Light Weight Process - LWP) is a unit of execution running in user space. In order to perform work, it must pass requests to a kernel thread.
+(Tea) - Kernel thread - Kernel threads are handled entirely by the kernel. They need not be associated with a process; a kernel can create them whenever it needs to perform a particular task. Kernel threads cannot execute in user mode. LWPs (in systems where they are a separate layer) bind to kernel threads and provide a user-level context. This includes a link to the shared resources of the process to which the LWP belongs. When a LWP is suspended, it needs to store its user-level registers until it resumes, and the underlying kernel thread must also store its own kernel-level registers.
+(Tea) - One to One - One user thread is bound to (serviced by) a single kernel thread
+(Tea) - Many to One - Many user threads are bound to (serviced by) a single kernel thread. This is Uber if Uber had assigned drivers to passengers.
+(Tea) - Many to Many - Many user threads can be serviced by any of several kernel threads. This is the Uber model.
+
+(Tea) - OS-Trusted code is handled by (that is, available to and executed by) the kernel. The user program can request the kernel to execute OS-trusted code, but it's up to the kernel developers to determine correctly if that request is appropriate (legal). As such, kernel- and user-variables can be kept separate (provided the kernel behaves properly).
+(Tea) - Windows is not really more advanced. Linux's rm acts similarly to Windows' delete, it changes a file status to allow rewriting, but does not zero out the memory within the deleted file (at least, not until the OS needs that memory space for something. Both Linux and Windows allow for the same functionality of true file deletion or file recovery (and by extension, file snooping), the "Recycle Bin" merely formalizes this function into an analogy that can be readily understood by a broad audience.
+(Tea) - Windows is not more advanced. User-killing of processes by name only causes a dilemma when a process in need of killing shares the same name as processes that are running properly. Linux's 'pstree' command provides PID, name, as well as parent-child dependencies, which helps to inform the user as to the correct process to target, while the targeting by PID ensures that the correct process is terminated.
+(Tea) - ^ Second this ^ Windows has the CMD utility and many distros of Linux include a GUI.
+(Tea) - From the Wiki: "In computing, a segmentation fault (often shortened to segfault) or access violation is a fault, or failure condition, raised by hardware with memory protection, notifying an operating system (OS) the software has attempted to access a restricted area of memory (a memory access violation)."
+  - Any time a process calls for a memory access which the OS deems it does not have permission for.
+(Tea) - 'cerr', however, is not buffered. With no place to store a message, outputs to cerr go to console at the time they are generated.
+(Tea) - Direct Communication:
+  - Shared Message Queue
+  - Shared Memory
+(Tea) - Indirect Communication:
+  - Pipe - The pipe is a memory buffer between two processes
+  - Socket - A socket is a memory storage location external to both processes
+(Tea) - Sockets - They are maintained by the operating system.
+  - <Shared?> - Unsure about these ones
+(Tea) - All methods of interprocess communication require some rules regarding synchronization. These rules form a protocol. Rarely, some protocols may not require explicit synchronization between processes (as in, say, television broadcasts, where reception of the information is not assumed and, more to the point, is of no consequence to the producer). Where a protocol requires information fidelity, however, then rules must be written (synchronization) to ensure that read operations and write operations happen during the correct times or sequence within the system.
+(Tea) - Sockets. Not shared memory methods, as those require writing to the same memory. Not pipes either, as that requires the local file descriptors to function (and fork() doesn't fork to a separate computer anyhow).
+(Tea) - Pipes. <(Also domain sockets?)>
+(Tea) - Nooooone of them...? Or maybe just the shared memory communications as the OS may not allow non-typed data to be written. It seems possible, based upon our send() and recv() functions from the assignment, to send untyped binary packets into the buffer that then need to be read back out in the correct type. The send itself, however, is likely untyped.
+(Tea) - We may also visualize the bottleneck as being the factor which, when changed, will affect runtime (usually in the context of improvement). If variations to computation time affects no noticeable change in runtime, but I/O call completion does, the process is I/O bound. Vice versus for CPU-bound processes.
+
+Example of an I/O bound process: Streaming a video. Most computers will require the same time to complete processing of the video content, but the total time spent in-process is likely to be affected (limited, really) by the speed of the I/O call (your download speed off the net).
+(Tea) - Source Code <- Computer doesn't really care about this.
+The compiler translates human-readable source code into a sequence of system calls. This list of calls reside in the text section of a process and are sequentially sent to the kernel for execution.
+(Tea) - If a parent process is performing a task utilizing resources and wants to invoke a child process to contribute, the child process must know what the parent is doing. This is akin to a mother baking a million brownies, then pulling her child in to help with half of them. If she fails to inform her child of what the task is, how to complete it, or where the ingredients are, the child will be unable to proceed appropriately. Maybe. I have no clue, honestly.
+(Tea) - Within the O.S., the inheritance is handled by copying the (almost) entirety of the Process Control Block to a fresh PCB (including all resources and task counters) and assigning a new PID to it. After this operation, the child process is (practically) indiscernible from the parent process, save for their different PID values.
+(Tea) - Process context switching may involve loading the entire process (that is, the program and its states) rather than just the memory unique to a single thread of execution. More data to load just means more time needed to execute (context switch).
+(Tea) - Threads, sharing the same variables and memory space as their parent process, can be expected to be loaded to memory simultaneously. As such, time will not be spent context-switching between them to the same extent as may be required for independent processes, which may need to be swapped in and out of memory (incurring expensive I/O operations).
+(Tea) - Note: We haven't done this yet, but both threads and processes can enter deadlock situations in which thread/process A holds a resource and is waiting for thread/process B to free something. Meanwhile, thread/process B holds the resource thread/process A needs and is waiting for thread/process A to free it.
+It's an Ouroboros.
+
+(Tea) - Both threads and processes may utilize multi-processor architectures, since at the CPU level, what matters are the number of simultaneous threads that can be executed on the cores. This will always be limited by the core count, and the cores don't care if the tasks to perform originated from threads or processes.
+
+Context switching will be faster between threads than processes, though this has more to do with memory access than multiprocessor architectures.
+(Tea) - Computations performed on data sets that can be subdivided. If it goes in a giant spreadsheet or has the word 'database' in it, that's probably a candidate for multithreading.
+ (Tea) - If you only have one core to work with.
+If the algorithm must be performed sequentially (though excluding speculative execution, for which anything can be parallelized). SHA-1, SHA-256, SHA-512 are perhaps the most obvious examples. This is not to say that there are not hash functions that can be parallelized, just that these common ones cannot be.
+(Tea) - The parent process will not block waiting for the child process to conclude.
+(Tea) - Semawhatnow? I'm going to go out on a limb and just hope these aren't on the test. o.O
+(Tea) - Full utilization of resources may be detrimental to the overall goal of user satisfaction if this utilization negatively impacts perceived performance (responsiveness, battery life, user-prioritized process behaviors, etc.).
+(Tea) - The operating system (and by extension, how it schedules tasks) must complete work within set, rather than open-ended, time constraints.
+(Tea) - Against: United States v. Microsoft Corp. 2001. Feature creep. Software bloat. Users lose control of system behavior. Added complexity results in more security vulnerabilities.
+For: More direct access to system resources and better performance metrics.
+(Tea) - Kernel mode ensures that all potentially catastrophic actions are handled in a single, consistent, and reliable fashion. While inappropriate requests can be made by a programmer, the kernel can ensure that such requests are not carried out. This is similar in principle to why a bank (the OS) utilizes a teller (kernel mode) to execute transactions (user tasks). It could be (that is, it definitely will eventually be) an error to allow users direct access to the vaults.
+  a. Set value of timer - (Tea) The system timer is used for all scheduling tasks.
+  b. Read the clock - (Tea) Can be done in user-mode - does not disrupt anything.
+  c. Clear memory - (Tea) The OS must determine if memory modification is legal.
+  d. Issue a trap instruction - (Tea) Usually issued by user-mode to switch to kernel-mode
+  e. Turn off interrupts - (Tea) User process could block resources if this were possible.
+  f. Modify entries in device-status table - <?>
+  g. Switch from user to kernel mode - (Tea) This is a system call.
+(Tea) - If neither the user or the O.S. can access the partitioned contents, how can the O.S. modify itself (as in updating)?
+(Tea) - For that matter, how can the partition be modified if it is protected from the O.S.?
+(Tea) - Ring-based security can be implemented through the use of modes exceeding just user-mode and kernel-mode. This may allow OS-enforced security behaviors such as restricting certain applications from taking select actions (such as USB or CD drivers from auto-executing or writing to system resources - thus thwarting a common attack vector for malicious  applications).
+
+
+(Tea) - Steps:
+  1) The system clock uses a quartz crystal to tether electronic oscillations to real-world time flow.
+  2) Oscillations drive an incrementing counter, one per cycle. Uninterrupted execution of this clock is guaranteed by backup power (the BIOS battery).
+  3) An arbitrary user-defined time (HH:MM:SS) can be correlated to system clock value
+  4) An interrupt is set to occur when the system (or user) time exceeds the desired value (the system counter increments above a value)
+  5) The setting program then sleeps.
+  6) When the program is awakened by the interrupt conditions being met:
+    a) The program timer is updated.
+    b) A new interrupt is set for a further time.
+    c) The program sleeps.
+As system time and "human" time are correlated, the timer may be configured in multiple formats depending upon needs.
+
+(Tea) - Caches pre-store data between components to improve the time needed to serve that data when or if it is needed. Caches also serve to buffer data if the producer generates results faster than the consumer can accept them, allowing the producer to 
+
+(Tea) - State longevity may preclude certain storage mediums from use, as where data must be stored for long periods of time without power, volatile memory cannot serve such functions.
+
+(Tea) - Where state permanence is equivalent, storage speed and capacity tends to be limited by economic considerations. Faster storage mediums tend to be more expensive per unit of storage. Where this is not the case, a storage medium becomes obsolete (as a slower, more expensive format will simply not be utilized).
+
+(Tea) - Hence, large banks of cache-like memory could be used, but the price would likely become prohibitive for most end-users.
+(Tea) - Client-Server: Clients send requests to the server which are either fulfilled or denied. If fulfilled, the results of that request are sent back to the client.
+(Tea) - Peer-to-Peer: All nodes can perform both requests and service (request fulfillment)
+(Tea) - Privacy, integrity, access - User processes can impact all three.
+(Tea) - No. Efforts can be made to divide user processes securely, but we cannot guarantee a non-existence of vulnerabilities, particularly against malicious and adversarial processes that may exploit the system beyond the levels controlled or anticipated by the OS and its designers.
+(Tea) - Purpose of an Interrupt: To provide an asynchronous means of signalling the processor to run code instructions.
+(Tea) - Difference from a Trap: Traps are synchronous, generated during the execution of code.
+(Tea) - Can Traps by generated intentionally? Yes, absolutely. They almost always are, in fact, as even "error" generated traps are deliberately created in response to what system designers deemed to be an error.
+(Tea)
+a. How does the CPU interface with the device to coordinate the transfer?
+  - Supposing that a million packets of information must be transferred from A to B. Naively, the CPU could grab the first packet, send it to storage, grab the second packet, send it, etc. In DMA, the CPU rather determines the location of the first packet, the number of packets to transfer, and the packet size. This information is passed to the DMA controller, which handles the execution of the actual memory transfer, freeing the CPU from such tasks. It is the difference between the CPU doing the work and the CPU generating instructions for the DMA controller to do the work.
+b. How does the CPU know when the memory operations are complete?
+  - An interrupt (an asynchronous signal that could occur at any time) is generated by the DMA controller and sent to the CPU. Literally, this is the DMA controller saying, "Hey, I'm done with that task you assigned."
+c. The CPU is allowed to execute other programs while the DMA controller is transferring data. Does this process (DMA data transfer) interfere with the execution of the user programs? If so, describe what forms of interference are caused.
+  - Potentially. As the DMA controller may not guarantee order or sequence of its work, and nor may it provide updates as to its progress, the CPU does not know what memory in its original order is "safe" to change (has already been transferred) and what memory is not (still needs to be transferred). If the user process and/or the OS does not guard memory properly, then rewriting DMA-targetted memory during transfer will likely result in errors.
+(Tea) - Memory speed relates to cost - extremely fast memory is expensive. Small amounts of extremely fast memory (a cache) can be placed nearer to the CPU (which works on tiny amounts of data at a time anyways) as buffers out to larger, slower caches. This solves three problems; the CPU can access memory extremely quickly and the CPU is not blocked by size limitations, and hardware costs are kept at market-competitive rates.
+(Tea) - Form and fit impacts the battery. Device power capacity is in a very literal sense proportional to the number of operations the CPU can perform. Hence, efficiency of execution becomes paramount, with poor software design directly resulting in reduced battery life. Traditional PCs have no such limitation and, in fact, are incentivized to process fully and continuously, avoiding idle processor time.
+(Tea) - Ease of setup - No direct action is required to set up a peer-to-peer network.
+
+(Tea) - Resiliency - Failure of a single node will not impact system performance as much as failure of a server.
+
+(Tea) - Cost and complexity - Servers require dedicated hardware and maintenance. Peer-to-peer maintenance is externalized and amortized to purchases and maintenance that users would have performed regardless.
+(Tea)
+  - Content distribution, particularly where requests risk overwhelming server assets
+  - Decentralized communication networks
+  - Distributed storage
+  - Mission-critical systems where a server connection cannot be guaranteed
+(Tea):
+Advantages:
+  - Cost to deploy is usually less than commercial software.
+  - Allows end-users to guarantee function via code review and testing.
+  - Reduced bloat: Bundling tends to be reduced.
+
+Disadvantages:
+  - Open source makes the source code readily available to adversaries
+  - Support (lack of) - Responsibility for bugs and deficiencies can be diffused.
+  - User unfriendly - UI and features are usually less than commercial OSes.
+(Tea) - System calls provide a structured interface which user processes may use to interact with the operating system. They limit the ways in which user processes may utilize system resources, hopefully only to the legal (harmless) subset of actions.
+(Tea): 8, 2 after fork1, 4 after fork2, 8 after fork3
+(Tea): RPC == Remote Procedure Call
+
+Teabean [12:59 AM]
+I think Prof. Parsons mentioned that pthreads would specifically not be on this exam.
+
+Teabean [1:25 PM]
+You have a peculiar perception of what constitutes 'fun', Thurman. :smile:
+
+I would guess:
+
+```top
+mid A
+mid A
+mid B
+mid B
+mid B
+mid B
+mid C
+mid C
+mid C
+mid C
+mid C
+mid C
+mid C
+mid C
+bottom```
+
+Where the mid Bs may occur at any time after the first mid A, and the mid Cs may occur at any time after the first mid B.
+
+Teabean [1:45 PM]
+Anybody have a hypothesis as to why parallelizing a program might cause the final prompt to display final results to just... skip?
+
+Like, I run the same program on 1 core, 2 core, and 4 core, and only in the 1 core situation does cin properly block awaiting a response.
+
+Teabean [1:48 PM]
+And in the 2 and 4 core situations, if I place the cin in a loop (like, while we don't have a "y" or "n" for the response), then it loops forever, like it just keeps taking cin values.
+
+Teabean [5:00 PM]
+Herglblargl, whoops! Also, we seem to concur that wait() may cause things to just block since there are no calls to exit and the leaf-child processes will be waiting for 4 of their non-existent children to close.
+
+So... maybe no "bottom" will be seen at all...? How puzzling!
+
+Teabean [5:01 PM]
+Matt is running it right now. :stuck_out_tongue:
+We're counting the 'bottoms'
+Yup, 16!
+
+Teabean [5:02 PM]
+Ha ha, thanks, Thurman! :smile:
+
+Teabean [5:32 PM]
+H/T to Max:
+http://www.tutorialspoint.com/unix_system_calls/wait.htm
+tutorialspoint.com
+wait() - Unix, Linux System Call
+wait() - Unix, Linux System Calls Manual Pages (Manpages) , Learning fundamentals of UNIX in simple and easy steps : A beginner's tutorial containing complete knowledge of Unix Korn and Bourne Shell and Programming, Utilities, File System, Directories, Memory Management, Special Variables, vi editor, Processes
+
+Teabean [11:48 AM]
+Interesting; got an answer back regarding that bug with the program blasting through cin after forking.
+
+Supposedly,  if a process' cin was ever closed, then future calls to it (like 'cin >> someString', where we would expect it to block for user input) will be ignored because, well, the program thinks that cin is closed.
+
+Also also, if you end up doing multi-processing in the future, there are mechanism (like mkfifo()) that enable pipe creation but in a much safer way than interacting with the standard communication channels of stdin, stdout, and stderr. Things to figure out later.
+
+Teabean [4:41 PM]
+Ha ha ha...
+
+```Modified Graham Scan - 1 Core - 20000 points:
+6146
+6156
+6176
+6503
+5935
+
+UWB Graham Scan - 1 Core - 20000 points
+96142
+96630
+101415
+98427```
+
+Teabean [6:20 PM]
+Linux lab, machines 8 and up seem to be okay. Maybe?
+
+Also:
+
+https://en.wikipedia.org/wiki/Dekker%27s_algorithm
+Wikipedia
+Dekker's algorithm
+Dekker's algorithm is the first known correct solution to the mutual exclusion problem in concurrent programming. The solution is attributed to Dutch mathematician Th. J. Dekker by Edsger W. Dijkstra in an unpublished paper on sequential process descriptions and his manuscript on cooperating sequential processes. It allows two threads to share a single-use resource without conflict, using only shared memory for communication.
+It avoids the strict alternation of a naïve turn-taking algorithm, and was one of the first mutual exclusion algorithms to be invented.
+
+https://en.wikipedia.org/wiki/Peterson%27s_algorithm
+Wikipedia
+Peterson's algorithm
+Peterson's algorithm (or Peterson's solution) is a concurrent programming algorithm for mutual exclusion that allows two or more processes to share a single-use resource without conflict, using only shared memory for communication. It was formulated by Gary L. Peterson in 1981. While Peterson's original formulation worked with only two processes, the algorithm can be generalized for more than two.
+
+Teabean [6:31 PM]
+Per the slide (Thread 0, Dekker's example):
+```flag[0] = true;
+while ( flag[1] == true ) {
+   if ( turn != 0 ) {
+      flag[0] = false;
+      while (turn != 0)
+      // busy wait;
+      flag[0] = true;
+   }
+}
+
+// Critical section
+
+turn = 1;
+flag[0] = false```
+(edited)
+
+https://en.wikipedia.org/wiki/Lamport%27s_bakery_algorithm
+Wikipedia
+Lamport's bakery algorithm
+Lamport's bakery algorithm is a computer algorithm devised by computer scientist Leslie Lamport, which is intended to improve the safety in the usage of shared resources among multiple threads by means of mutual exclusion.
+In computer science, it is common for multiple threads to simultaneously access the same resources. Data corruption can occur if two or more threads try to write into the same memory location, or if one thread reads a memory location before another has finished writing into it. Lamport's bakery algorithm is one of many mutual exclusion algorithms designed to prevent concurrent threads entering critical sections of code concurrently to eliminate the risk of data corruption.
+
+Teabean [7:14 PM]
+Oh neat, there are only about 200 of these!
+
+http://asm.sourceforge.net/syscall.html
+
+Teabean [10:17 AM]
+And I think I tried to state which date was which in the calendar outline. It'll say something like, "Exam3 (according to Notebook)" or "Exam3 (according to Canvas)".
+And if you see dates missing or have another source to add to that calendar, please do!
+
+Just a summary of what I dug up regarding pthreads. No warranty on this information.
+
+// PThreads - https://en.wikipedia.org/wiki/POSIX_Threads
+// POSIX Threads, usually referred to as pthreads, is an execution model that exists independently from a language,
+// as well as a parallel execution model. It allows a program to control multiple different flows of work that overlap in time.
+// Each flow of work is referred to as a thread, and creation and control over these flows is achieved by making calls to the
+// POSIX Threads API. POSIX Threads is an API defined by the standard POSIX.1c, Threads extensions (IEEE Std 1003.1c-1995).
+
+// (+) --------------------------------|
+// pthread_create(pthread_t* arg1,
+//          const pthread_attr_t* arg2,
+//           void* (*arg3) (void *),
+//           void* arg4)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_create
+// Desc:    Creates a new thread which begins executing the function arg3 using arguments arg4
+// Params:  pthread_t* arg1 - A buffer to store the ID of the new thread. Used to refer to the thread in subsequent calls to other pthread functions
+//          const pthread_attr_t* arg2 - Points to a pthread_attr_t structure to determine attributes for the new thread.
+//             If NULL, then the thread is created with default attributes
+//          void* (*start_routine) (void *) arg3 - The function on which the thread shall begin execution
+//          void* arg4 - The sole argument passed to the function
+// PreCons: #include <pthread.h>
+//          Compile and link with -pthread
+// PosCons: The new thread terminates in one of the following ways:
+//          1) It calls pthread_exit(3), specifying an exit status value that is available to another thread in the same process that calls pthread_join(3).
+//          2) It returns from arg3(). This is equivalent to calling pthread_exit(3) with the value supplied in the return statement.
+//          3) It is canceled (see pthread_cancel(3)).
+//          4) Any of the threads in the process calls exit(3), or the main thread performs a return from main(). This causes the termination of all threads in the process.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+
+
+// (+) --------------------------------|
+// #pthread_join(pthread_t thread, void** arg2)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_join
+// Desc:    Waits for the thread specified by arg1 to terminate.
+//          If that thread has already terminated...
+//             Then pthread_join() returns immediately.
+// Params:  pthread_t arg1 - The thread to wait for termination of
+//          void** arg2 - The location where the exit status of the joined thread is stored. This can be set to NULL if the exit status is not required.
+// PreCons: #include <pthread.h>
+//          The thread specified by thread must be joinable
+//          Compile and link with -pthread
+// PosCons: After a successful call to pthread_join(), the caller is guaranteed that the target thread has terminated.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+
+
+// A restrict-qualified pointer (or reference)...
+// is basically a promise to the compiler that for the scope of the pointe
+// the target of the pointer will only be accessed through that pointer (and pointers copied from it).
+
+// (+) --------------------------------|
+// #pthread_cond_timedwait( pthread_cond_t*  restrict arg1, 
+//                          pthread_mutex_t* restrict arg2,
+//             const struct timespec*        restrict arg3)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_cond_wait
+// Desc:    Atomically releases the arg1 mutex and causes the calling thread to block on the arg2 condition variable
+//          The pthread_cond_timedwait() function shall be equivalent to pthread_cond_wait()
+//             Except that if the absolute time specified by abstime passes before the condition cond is signaled or broadcasted ((that is, system time equals or exceeds abstime))
+//             Or if the absolute time specified by abstime has already been passed at the time of the call.
+//                An error is returned
+// Params:  pthread_cond_t*        restrict arg1 - The condition variable the calling thread blocks upon
+//          pthread_mutex_t*       restrict arg2 - The mutex to release
+//          const struct timespec* restrict arg3 - The valid time within which a timedwait() call may be made within
+// PreCons: #include <pthread.h>
+// PosCons: Upon successful return, the mutex shall have been locked and shall be owned by the calling thread.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+// (+) --------------------------------|
+// #pthread_cond_wait(pthread_cond_t*  restrict arg1,
+//                   pthread_mutex_t* restrict arg2)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_cond_wait
+// Desc:    Atomically releases the arg1 mutex and causes the calling thread to block on the arg2 condition variable
+// Params:  pthread_cond_t*  restrict arg1 - The condition variable the calling thread blocks upon
+//          pthread_mutex_t* restrict arg2 - The mutex to release
+// PreCons: #include <pthread.h>
+// PosCons: Upon successful return, the mutex shall have been locked and shall be owned by the calling thread.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error.
+
+
+
+// (+) --------------------------------|
+// #pthread_cond_signal(pthread_cond_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_cond_signal
+// Desc:    Signal or broadcast a condition
+//          Unblocks at least one of the threads that are blocked on the specified condition variable cond
+//          (if any threads are blocked on cond).
+// Params:  pthread_cond_t arg1 - The condition upon which threads are blocking
+// PreCons: #include <pthread.h>
+// PosCons: No effect if there are no threads currently blocked on cond.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+// (+) --------------------------------|
+// #pthread_cond_broadcast(pthread_cond_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_cond_signal
+// Desc:    Signal or broadcast a condition
+//          Unblocks all threads currently blocked on the specified condition variable cond.
+// Params:  pthread_cond_t arg1 - The condition upon which threads are blocking
+// PreCons: #include <pthread.h>
+// PosCons: No effect if there are no threads currently blocked on cond.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+
+
+// (+) --------------------------------|
+// #pthread_mutex_lock(pthread_mutex_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_mutex_unlock
+// Desc:    The mutex object referenced by mutex shall be locked by calling pthread_mutex_lock().
+//          If the mutex is already locked
+//             The calling thread shall block until the mutex becomes available.
+//          This operation shall return with the mutex object referenced by mutex in the locked state with the calling thread as its owner.
+
+//          If the mutex type is PTHREAD_MUTEX_NORMAL...
+//             Deadlock detection shall not be provided.  
+//             Attempting to relock the mutex causes deadlock.
+//             If a thread attempts to unlock a mutex that it has not locked or a mutex which is unlocked, undefined behavior results.
+
+//          If the mutex type is PTHREAD_MUTEX_ERRORCHECK... 
+//             Then error checking shall be provided.
+//             If a thread attempts to relock a mutex that it has already locked, an error shall be returned. 
+//             If a thread attempts to unlock a mutex that it has not locked or a mutex which is unlocked, an error shall be returned.
+
+//          If the mutex type is PTHREAD_MUTEX_RECURSIVE...
+//             Then the mutex shall maintain the concept of a lock count.
+//             When a thread successfully acquires a mutex for the first time, the lock count shall be set to one.
+//             Every time a thread relocks this mutex, the lock count shall be incremented by one.
+//             Each time the thread unlocks the mutex, the lock count shall be decremented by one.
+//             When the lock count reaches zero, the mutex shall become available for other threads to acquire.
+//             If a thread attempts to unlock a mutex that it has not locked or a mutex which is unlocked, an error shall be returned.
+
+//          If the mutex type is PTHREAD_MUTEX_DEFAULT...
+//             Attempting to recursively lock the mutex results in undefined behavior.
+//             Attempting to unlock the mutex if it was not locked by the calling thread results in undefined behavior.
+//             Attempting to unlock the mutex if it is not locked results in undefined behavior.
+
+// Params:  pthread_mutex_t* arg1 - The mutex to lock
+// PreCons: #include <pthread.h>
+// PosCons: ---
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+// (+) --------------------------------|
+// #pthread_mutex_unlock(pthread_mutex_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_mutex_unlock
+// Desc:    The pthread_mutex_unlock() function shall release the mutex object referenced by arg1.
+//          The manner in which a mutex is released is dependent upon the mutex's type attribute.
+//          If there are threads blocked on the mutex object referenced by mutex when pthread_mutex_unlock() is called...
+//             And this results in the mutex becoming available
+//             The scheduling policy shall determine which thread shall acquire the mutex.
+
+//          In the case of PTHREAD_MUTEX_RECURSIVE mutexes...
+//             The mutex shall become available when the count reaches zero and the calling thread no longer has any locks on this mutex.
+
+//          If a signal is delivered to a thread waiting for a mutex...
+//             Upon return from the signal handler the thread shall resume waiting for the mutex as if it was not interrupted.
+// Params:  pthread_mutex_t* arg1 - The mutex to lock
+// PreCons: #include <pthread.h>
+// PosCons: ---
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+// (+) --------------------------------|
+// #pthread_mutex_trylock(pthread_mutex_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_mutex_unlock
+// Desc:    The pthread_mutex_trylock() function shall be equivalent to pthread_mutex_lock()...
+//             Except that if the mutex object referenced by mutex is currently locked (by any thread, including the current thread)...
+//                The call shall return immediately.
+//             If the mutex type is PTHREAD_MUTEX_RECURSIVE and the mutex is currently owned by the calling thread
+//                The mutex lock count shall be incremented by one
+//                And the pthread_mutex_trylock() function shall immediately return success.
+// Params:  pthread_mutex_t* arg1 - The mutex to lock
+// PreCons: #include <pthread.h>
+// PosCons: ---
+// RetVal:  int 0 - If mutex is acquired
+//          int !0 - Indicates error
+
+Teabean [5:25 PM]
+Yesh, what's up?
+
+Also, anybody have any strong opinions regarding whether the service chairs are implemented as a queue or an array?
+
+Teabean [5:53 PM]
+Oops, not yet, sorry! I'm still mostly poking over the source code trying to figure out what's going on in the single barber situation.
+
+Teabean [7:52 PM]
+Yeah, I should be around the Seattle area if anybody would like to meet up to go over the test materials or the program.
+
+Teabean [8:04 PM]
+Speaking of the program assignment, anybody else have a bug wherein a barber can sometimes sleep (wait()), then immediately wakes (gets signal()ed) without a customer around...?
+
+I wish I knew how to check and set the state of the pthread_cond_ts. It's almost like they're initializing to a state. (edited)
+
+Teabean [8:27 PM]
+Ran it twice with differing results each time. le sigh...
+
+```teabean@Acer2:~$ ./sleepingBarbers 1 2 1 1000
+Barbers    : 1
+Wait Chairs: 2
+Customers  : 1
+BarberSpeed: 1000
+Barbers created!
+
+BarberFunction() called.
+Barber  [0]: Step 00 : Sleeps because of no customers.
+Customer[0]: Step 01 : Moves to the service chair. # waiting seats available = 2
+Customer[0]: Step 02 : Wakes Barber[0]
+Customer[0]: Step 03 : Waits for the hair-cut to be done
+Barber  [0]: Step 04 : Barber has been woken up!
+Barber  [0]: Step 05 : Beginning a hair-cut service for 0
+Barber  [0]: Step 06 : Completes a hair-cut service for 0
+Customer[0]: Step 07 : Realizes the hair-cut is complete
+Customer[0]: Step 08 : Pays the barber.
+Customer[0]: Step 09 : Dashes out the door.
+Barber  [0]: Step 10 : Realizes he has been paid.
+Barber  [0]: Step 11 : Resets the chair and calls in another customer
+All customers served!
+
+Barber  [0] goes home.
+# customers who didn't receive a service = 0
+teabean@Acer2:~$ ./sleepingBarbers 1 2 1 1000
+Barbers    : 1
+Wait Chairs: 2
+Customers  : 1
+BarberSpeed: 1000
+Barbers created!
+
+BarberFunction() called.
+Barber  [0]: Step 00 : Sleeps because of no customers.
+Barber  [0]: Step 04 : Barber has been woken up!
+Customer[0]: Step 01 : Moves to the service chair. # waiting seats available = 2
+Barber  [0]: Step 05 : Beginning a hair-cut service for -1
+Customer[0]: Step 02 : Wakes Barber[0]
+Customer[0]: Step 03 : Waits for the hair-cut to be done
+Customer[0]: Step 07 : Realizes the hair-cut is complete
+Customer[0]: Step 08 : Pays the barber.
+Customer[0]: Step 09 : Dashes out the door.
+Barber  [0]: Step 06 : Completes a hair-cut service for 0
+Barber  [0]: Step 10 : Realizes he has been paid.
+Barber  [0]: Step 11 : Resets the chair and calls in another customer
+All customers served!
+
+Barber  [0] goes home.
+# customers who didn't receive a service = 0```
+
+Teabean [10 days ago]
+Right, it turns out that big block of pthread_cond_inits were actually kind of important. I have them jammed into the Shop constructors and they appear to be resolving this issue of the barber and/or customer picking up on ghost signals, but I might regret that down the road, we'll see.
+
+Teabean [8:49 PM]
+I believe so, yes, but there's a lab that's also due soon, so don't forget to get that packaged too. Remember to include your outputs with that one!
+
+Teabean [9:45 PM]
+Shoots, was it 3? The pthreads one, whichever that was.
+
+Teabean [9:46 PM]
+Oh geez, lab 3 is supposedly due the day of the exam. This week is gonna suuuuuck. =(
+
+Teabean [12:28 AM]
+Ditto, the ThreadParam isn't dynamically allocated with 'new', so I also ended up having to comment out the 'delete'.
+
+Minor trick of it was that the error gets thrown when the ThreadParam object goes out of scope, which can make identifying the bug a little tricky (as the bug is apparently the *first* time it gets deallocated by 'delete').
+
+Slight disclaimer in that I haven't tested this with Valgrind yet. I've just been trying to get the program to run proper-like. :stuck_out_tongue:
+
+Teabean [7:42 PM]
+Humble request that you append your Big-Picture terminology to the study guide (I'll handle alphabetization and removal of repeats). Will fill in as a vocab/terminology exercise.
+
+Teabean [12:16 AM]
+@Wes Gray - Recap for today:
+Completed discussion of deadlocks, example of Discussion 3, Part 2 provided.
+
+Clarification provided on what a "Safe" and "Unsafe" state are. You can think of it as being analogous to chess and checkmate. If the next move in a resource allocation graph results in deadlock, that's an unsafe state (checkmate).
+
+If you're two moves from checkmate, you're technically still in a "safe" state, even if deadlock is imminent (this is a bit like "check", maybe you can still escape).
+
+Started in on files, general ideas:
+1) Everything nonvolatile is a file
+2) Some OSes require a file extension, others do not.
+3) There's a lot of stuff you can "do" with files. Like the familiar:
+Open, close, write, copy, move, create, delete
+4) And also some stuff you might not be familiar with like:
+Seek, truncate, append
+
+A read/access operation can occur from any point in the file, including the end.
+
+Reading from the end may be useful in log access situations where you want the most recent appends and the log is inconveniently large.
+
+Spent the last segment of class on a new "Big Ideas" exercise as review for exam 2 (files will not be on it).
+
+EXAM 2 - STUDY GUIDE
+ (Tea) - 
+
+* Threading Issues
+- Async v Deferred Cancellation: immediate termination, or thread checks then terminates itself when appropriate
+- Signal Handling - Sync (eg. illegal memory access, terminates mid-process) v Async (exogenous, eg. ctrl+C from shell)
+ (Tea) - 
+
+* Threading Issues
+- Async v Deferred Cancellation: immediate termination, or thread checks then terminates itself when appropriate
+- Signal Handling - Sync (eg. illegal memory access, terminates mid-process) v Async (exogenous, eg. ctrl+C from shell)
+(Tea) A user thread (or Light Weight Process - LWP) is a unit of execution running in user space. In order to perform system call related work, it must pass requests to a kernel thread.
+(Tea) - Kernel thread - Kernel threads are handled entirely by the kernel. They need not be associated with a process; a kernel can create them whenever it needs to perform a particular task. Kernel threads cannot execute in user mode. LWPs (in systems where they are a separate layer) bind to kernel threads and provide a user-level context. This includes a link to the shared resources of the process to which the LWP belongs. When a LWP is suspended, it needs to store its user-level registers until it resumes, and the underlying kernel thread must also store its own kernel-level registers.
+
+(Tea) - 4.2.1 - Many to One - Maps many user level threads to one kernel level thread.
+(+) Thread management handled by the protocols in the user space.
+(-) Process will block if a thread makes a blocking system call
+(-) Lack of parallelization (since only one thread can access the kernel at a time)
+
+(Tea) - 4.2.2. - One to One - One user thread is bound to (serviced by) a single kernel thread.
+(+) Allows for concurrent processing. User threads do not block each other.
+(+) Allows for parallelization. Multiple threads can run on multiple processors.
+(-) The OS may restrict the number of kernel threads that can be created.
+
+(Tea) - 4.2.2. - Many to Many - Many user threads are mapped to many kernel threads.
+(+) Developer can establish as many user threads as necessary
+(+) These threads can run in parallel
+(+) Threads do not block one another
+(-) None? (Suggestion: maybe overhead to assign user thread to kernel thread? Need a manager that actively manage this)
+ (Tea) - 4.3.1 - POSIX threads (pthread.h) -  an execution model that exists independently from a language, as well as a parallel execution model. It allows a program to control multiple different flows of work that overlap in time. Each flow of work is referred to as a thread, and creation and control over these flows is achieved by making calls to the POSIX Threads API. POSIX Threads is an API defined by the standard POSIX.1c, Threads extensions (IEEE Std 1003.1c-1995). A standardized protocol for creating and working with multi-threading architectures.
+ (Tea) -
+New - Requires RAM, but does not use CPU resources (processor cycles) until running
+Runnable - Thread is able to use CPU resources for tasks
+Blocked - Not using the CPU, but also not allowed to continue execution
+Terminated - The thread is closed and no longer uses CPU resources
+
+ (Tea)
+6.1 (p.193(7e)) - Race Condition - A situation where several processes access and manipulate the same data concurrently, where the outcome of the execution depends on the particular order in which the access takes place.
+Preconditions (Criteria):
+   1. Pre-emptive kernel - No race conditions may exist without preemption
+   2. Shared resource - <Expand>
+ (Tea)
+6.2 (p.193(7e)) - Critical Section - Segments of code in which a process is at risk of modifying shared resources or, if preempted, having shared resources modified during access and use.
+ (Tea) -
+6.5 (p.200(7e)) - Semaphores - Literally ‘flags’. Accessed through 2 atomic (indivisible) operations:
+wait() - P, proberen (probe), ‘to test’
+signal() - V, verhogen (from ‘ver’ - to increase, to rise), ‘increment’
+(2) flavors - Binary (a mutex) and counting (<???>)
+
+6.5.1 (p.201(7e)) - Mutex - A binary semaphore that can only be in a state of 0 or 1.
+
+6.7 (p.209(7e)) - Monitors - A language-level construct, using a single lock, and one or more condition variables.
+Structure: entry queue, waiting queues (any threads waiting on a specific condition variable)
+ (Tea) - 
+pthread_create()
+pthread_join()
+pthread_cond_wait()
+pthread_cond_signal()
+pthread_cond_init()
+pthread_mutex_lock()
+pthread_mutex_unlock()
+
+// PThreads - https://en.wikipedia.org/wiki/POSIX_Threads
+// POSIX Threads, usually referred to as pthreads, is an execution model that exists independently from a language,
+// as well as a parallel execution model. It allows a program to control multiple different flows of work that overlap in time.
+// Each flow of work is referred to as a thread, and creation and control over these flows is achieved by making calls to the
+// POSIX Threads API. POSIX Threads is an API defined by the standard POSIX.1c, Threads extensions (IEEE Std 1003.1c-1995).
+
+// (+) --------------------------------|
+// pthread_create(pthread_t* arg1,
+//          const pthread_attr_t* arg2,
+//           void* (*arg3) (void *),
+//           void* arg4)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_create
+// Desc:    Creates a new thread which begins executing the function arg3 using arguments arg4
+// Params:  pthread_t* arg1 - A buffer to store the ID of the new thread. Used to refer to the thread in subsequent calls to other pthread functions
+//          const pthread_attr_t* arg2 - Points to a pthread_attr_t structure to determine attributes for the new thread.
+//             If NULL, then the thread is created with default attributes
+//          void* (*start_routine) (void *) arg3 - The function on which the thread shall begin execution
+//          void* arg4 - The sole argument passed to the function
+// PreCons: #include <pthread.h>
+//          Compile and link with -pthread
+// PosCons: The new thread terminates in one of the following ways:
+//          1) It calls pthread_exit(3), specifying an exit status value that is available to another thread in the same process that calls pthread_join(3).
+//          2) It returns from arg3(). This is equivalent to calling pthread_exit(3) with the value supplied in the return statement.
+//          3) It is canceled (see pthread_cancel(3)).
+//          4) Any of the threads in the process calls exit(3), or the main thread performs a return from main(). This causes the termination of all threads in the process.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+
+
+// (+) --------------------------------|
+// #pthread_join(pthread_t thread, void** arg2)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_join
+// Desc:    Waits for the thread specified by arg1 to terminate.
+//          If that thread has already terminated...
+//             Then pthread_join() returns immediately.
+// Params:  pthread_t arg1 - The thread to wait for termination of
+//          void** arg2 - The location where the exit status of the joined thread is stored. This can be set to NULL if the exit status is not required.
+// PreCons: #include <pthread.h>
+//          The thread specified by thread must be joinable
+//          Compile and link with -pthread
+// PosCons: After a successful call to pthread_join(), the caller is guaranteed that the target thread has terminated.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+
+
+// A restrict-qualified pointer (or reference)...
+// is basically a promise to the compiler that for the scope of the pointe
+// the target of the pointer will only be accessed through that pointer (and pointers copied from it).
+
+// (+) --------------------------------|
+// #pthread_cond_timedwait( pthread_cond_t*  restrict arg1, 
+//                          pthread_mutex_t* restrict arg2,
+//             const struct timespec*        restrict arg3)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_cond_wait
+// Desc:    Atomically releases the arg1 mutex and causes the calling thread to block on the arg2 condition variable
+//          The pthread_cond_timedwait() function shall be equivalent to pthread_cond_wait()
+//             Except that if the absolute time specified by abstime passes before the condition cond is signaled or broadcasted ((that is, system time equals or exceeds abstime))
+//             Or if the absolute time specified by abstime has already been passed at the time of the call.
+//                An error is returned
+// Params:  pthread_cond_t*        restrict arg1 - The condition variable the calling thread blocks upon
+//          pthread_mutex_t*       restrict arg2 - The mutex to release
+//          const struct timespec* restrict arg3 - The valid time within which a timedwait() call may be made within
+// PreCons: #include <pthread.h>
+// PosCons: Upon successful return, the mutex shall have been locked and shall be owned by the calling thread.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+// (+) --------------------------------|
+// #pthread_cond_wait(pthread_cond_t*  restrict arg1,
+//                   pthread_mutex_t* restrict arg2)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_cond_wait
+// Desc:    Atomically releases the arg1 mutex and causes the calling thread to block on the arg2 condition variable
+// Params:  pthread_cond_t*  restrict arg1 - The condition variable the calling thread blocks upon
+//          pthread_mutex_t* restrict arg2 - The mutex to release
+// PreCons: #include <pthread.h>
+// PosCons: Upon successful return, the mutex shall have been locked and shall be owned by the calling thread.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error.
+
+
+
+// (+) --------------------------------|
+// #pthread_cond_signal(pthread_cond_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_cond_signal
+// Desc:    Signal or broadcast a condition
+//          Unblocks at least one of the threads that are blocked on the specified condition variable cond
+//          (if any threads are blocked on cond).
+// Params:  pthread_cond_t arg1 - The condition upon which threads are blocking
+// PreCons: #include <pthread.h>
+// PosCons: No effect if there are no threads currently blocked on cond.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+// (+) --------------------------------|
+// #pthread_cond_broadcast(pthread_cond_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_cond_signal
+// Desc:    Signal or broadcast a condition
+//          Unblocks all threads currently blocked on the specified condition variable cond.
+// Params:  pthread_cond_t arg1 - The condition upon which threads are blocking
+// PreCons: #include <pthread.h>
+// PosCons: No effect if there are no threads currently blocked on cond.
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+
+
+// (+) --------------------------------|
+// #pthread_mutex_lock(pthread_mutex_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_mutex_unlock
+// Desc:    The mutex object referenced by mutex shall be locked by calling pthread_mutex_lock().
+//          If the mutex is already locked
+//             The calling thread shall block until the mutex becomes available.
+//          This operation shall return with the mutex object referenced by mutex in the locked state with the calling thread as its owner.
+
+//          If the mutex type is PTHREAD_MUTEX_NORMAL...
+//             Deadlock detection shall not be provided.  
+//             Attempting to relock the mutex causes deadlock.
+//             If a thread attempts to unlock a mutex that it has not locked or a mutex which is unlocked, undefined behavior results.
+
+//          If the mutex type is PTHREAD_MUTEX_ERRORCHECK... 
+//             Then error checking shall be provided.
+//             If a thread attempts to relock a mutex that it has already locked, an error shall be returned. 
+//             If a thread attempts to unlock a mutex that it has not locked or a mutex which is unlocked, an error shall be returned.
+
+//          If the mutex type is PTHREAD_MUTEX_RECURSIVE...
+//             Then the mutex shall maintain the concept of a lock count.
+//             When a thread successfully acquires a mutex for the first time, the lock count shall be set to one.
+//             Every time a thread relocks this mutex, the lock count shall be incremented by one.
+//             Each time the thread unlocks the mutex, the lock count shall be decremented by one.
+//             When the lock count reaches zero, the mutex shall become available for other threads to acquire.
+//             If a thread attempts to unlock a mutex that it has not locked or a mutex which is unlocked, an error shall be returned.
+
+//          If the mutex type is PTHREAD_MUTEX_DEFAULT...
+//             Attempting to recursively lock the mutex results in undefined behavior.
+//             Attempting to unlock the mutex if it was not locked by the calling thread results in undefined behavior.
+//             Attempting to unlock the mutex if it is not locked results in undefined behavior.
+
+// Params:  pthread_mutex_t* arg1 - The mutex to lock
+// PreCons: #include <pthread.h>
+// PosCons: ---
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+// (+) --------------------------------|
+// #pthread_mutex_unlock(pthread_mutex_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_mutex_unlock
+// Desc:    The pthread_mutex_unlock() function shall release the mutex object referenced by arg1.
+//          The manner in which a mutex is released is dependent upon the mutex's type attribute.
+//          If there are threads blocked on the mutex object referenced by mutex when pthread_mutex_unlock() is called...
+//             And this results in the mutex becoming available
+//             The scheduling policy shall determine which thread shall acquire the mutex.
+
+//          In the case of PTHREAD_MUTEX_RECURSIVE mutexes...
+//             The mutex shall become available when the count reaches zero and the calling thread no longer has any locks on this mutex.
+
+//          If a signal is delivered to a thread waiting for a mutex...
+//             Upon return from the signal handler the thread shall resume waiting for the mutex as if it was not interrupted.
+// Params:  pthread_mutex_t* arg1 - The mutex to lock
+// PreCons: #include <pthread.h>
+// PosCons: ---
+// RetVal:  int 0 - If successful
+//          int !0 - Indicates error
+
+// (+) --------------------------------|
+// #pthread_mutex_trylock(pthread_mutex_t* arg1)
+// ------------------------------------|
+// https://linux.die.net/man/3/pthread_mutex_unlock
+// Desc:    The pthread_mutex_trylock() function shall be equivalent to pthread_mutex_lock()...
+//             Except that if the mutex object referenced by mutex is currently locked (by any thread, including the current thread)...
+//                The call shall return immediately.
+//             If the mutex type is PTHREAD_MUTEX_RECURSIVE and the mutex is currently owned by the calling thread
+//                The mutex lock count shall be incremented by one
+//                And the pthread_mutex_trylock() function shall immediately return success.
+// Params:  pthread_mutex_t* arg1 - The mutex to lock
+// PreCons: #include <pthread.h>
+// PosCons: ---
+// RetVal:  int 0 - If mutex is acquired
+//          int !0 - Indicates error
+ (Tea) - 6.6.1, p.205 (7e)
+Classic example of a multi-process synchronization problem. The problem describes two processes, the producer and the consumer, who share a common, fixed-size queue used as a buffer. The producer's job is to generate data, put it into the buffer, and start again. At the same time, the consumer is consuming the data (i.e., removing it from the buffer), one piece at a time. The problem is to make sure that the producer won't try to add data into the buffer if it's full and that the consumer won't try to remove data from an empty buffer.
+
+
+// PRODUCER
+while (true) {        .   
+   {...}
+   // Produce an item
+   {...}
+   wait(empty);
+   wait(mutex);
+   {...}
+   // Fill the buffer
+   {...}
+   signal(mutex);
+   signal(full);
+}                     .
+
+// CONSUMER
+while (true) {        .
+   wait (full);
+   wait (mutex);
+   {...}
+   // Deplete buffer
+   {...}9
+   signal (mutex);
+   signal (empty);
+   {...}
+   // Consume the item
+   {...}
+}                     .
+
+
+
+ (Tea) - Use of a monitor. The monitor assumes control of the utensils and, though it may acknowledge that a philosopher is hungry, it will not allow the philosopher to pick up the utensils (it will command the philosopher to wait) until both utensils are available. In implementation, a mutex is placed around all chopsticks, and the monitor must ascertain when a philosopher may safely enter the critical section of reaching for a utensil.
+ (Tea) - A state in which each member of a group is waiting for some other member to take action, such as sending a message or more commonly releasing a lock.
+4 Prerequisites:
+1. Mutual Exclusion - one process using a resource at a time
+2. Hold-and-wait resource allocation - a process is waiting for another while holding
+3. No preemption - a process can't be forced to release it's resources
+4. Circular waiting 
+ (Tea) - Can be caused by just shitty process scheduling wherein a process (for reasons unrelated to deadlocking) can get buried or may never have a chance to exit the wait queue.
+(Tea) - Banker's Algorithm - A resource allocation and deadlock avoidance algorithm developed by Edsger Dijkstra that tests for safety by:
+   - Simulating or predicting maximum possible amounts of resources allocations
+   - Performing a safe-state check for deadlock conditions for all activities
+   - Deciding whether allocations should be allowed to continue
+Resources may be allocated to a process only if the amount of resources requested is less than or equal to the amount available; otherwise, the process waits until resources are available.
+ (Tea) - 7.5 (p.256(7e)) - Deadlock Avoidance
+A deadlock avoidance algorithm dynamically examines the resource-allocation state to ensure that a circular wait condition can never exist. Two examples:
+ - 7.5.2 - Resource-Allocation-Graph Algorithm
+ - 7.5.3 - Banker’s Algorithm
+ (Tea) - 7.6 (p.262(7e))
+Last line of defense if no deadlock -Prevention or -Avoidance is provided: Procedure to detect a deadlock situation (usually coupled with Deadlock Recovery). Comprised of two components:
+   - An algorithm that examines the state of the system to determine whether a deadlock has occurred.
+   - A means to recover from the deadlock.
+ (Tea) - 7.7 (p.266(7e)) - Procedures for resolving a deadlock situation:
+   - Preempt resources held by deadlocking processes until the deadlock is resolved
+   - Kill one or all processes that are involved in the deadlock cycle
+
+Killing processes without consideration to what the process was doing may leave files in incorrect states or have other deleterious effects.
+(Tea) - Computations performed on data sets that can be subdivided. If it goes in a giant spreadsheet or has the word 'database' in it, that's probably a candidate for multithreading.
+ (Tea) - If you only have one core to work with.
+If the algorithm must be performed sequentially (though excluding speculative execution, for which anything can be parallelized). SHA-1, SHA-256, SHA-512 are perhaps the most obvious examples. This is not to say that there are not hash functions that can be parallelized, just that these common ones cannot be.
+(Tea) - Step 1, definitions:
+1. User-level thread - A thread of execution in user-space
+2. Light Weight Process -  kernel threads
+3. Real-Time thread - A thread for which response time is critical and framed
+4. Real-Time system - Hardware and software systems subject to a "real-time constraint", for example from event to system response
+5. Bind - Assigning a user-thread (in this case, the RT thread) to a kernel thread.
+
+
+(Tea) - 
+
+(Tea) - Concurrency is when multiple tasks’ executions overlap
+Parallelism is the simultaneous execution of (possibly related) computations
+Hence, if parallel execution exists, they must also be concurrent
+Concurrent processes (as in mutual exclusion scenarios) need not be parallel 
+(Tea) - Adaptive mutex - A mutex that starts its life as a spinlock but, if it spins for too long, adapts into a waiting mutex.
+(Tea) - Students occupying the CSS506 ‘commit’ table when they don’t have any answers to write down. But I’m not bitter.
+(Tea) - Yes. Additional data can be provided to process or threads that are queued. Metadata of this sort in the form of a priority number which periodically increments can allow the system to ensure that even low priority tasks will eventually be served.
+(Tea) - Under normal operation, no, though I wonder if we might still describe a process as deadlocked if the resource it is requesting cannot be provided by the OS for other reasons (like a disconnected drive).
+ (Tea) - The smallest sequence of programmed instructions that can be managed independently by a scheduler, which is typically a part of the operating system.[1] The implementation of threads and processes differs between operating systems, but in most cases a thread is a component of a process. Multiple threads can exist within one process, executing concurrently and sharing resources such as memory, while different processes do not share these resources. In particular, the threads of a process share its executable code and the values of its variables at any given time.
+(Tea) - One to One - One user thread is bound to (serviced by) a single kernel thread
+(Tea) - Many to One - Many user threads are bound to (serviced by) a single kernel thread. This is Uber if Uber had assigned drivers to passengers. (or had one driver for the entire business) 
+(Tea) - Many to Many - Many user threads can be serviced by any of several kernel threads. This is the Uber model.   
+(Tea) - Context switching between threads in the same process is typically faster than context switching between processes. Threads do not duplicate much of the process overhead (memory space), instead duplicating only those elements which are relevant the the thread execution.
+(Tea) A user thread (or Light Weight Process - LWP) is a unit of execution running in user space. In order to perform work, it must pass requests to a kernel thread.
+(Tea) - Kernel thread - Kernel threads are handled entirely by the kernel. They need not be associated with a process; a kernel can create them whenever it needs to perform a particular task. Kernel threads cannot execute in user mode. LWPs (in systems where they are a separate layer) bind to kernel threads and provide a user-level context. This includes a link to the shared resources of the process to which the LWP belongs. When a LWP is suspended, it needs to store its user-level registers until it resumes, and the underlying kernel thread must also store its own kernel-level registers.
+(Tea) - Process context switching may involve loading the entire process (that is, the program and its states) rather than just the memory unique to a single thread of execution. More data to load just means more time needed to execute (context switch).
+(Tea) - Threads, sharing the same variables and memory space as their parent process, can be expected to be loaded to memory simultaneously. As such, time will not be spent context-switching between them to the same extent as may be required for independent processes, which may need to be swapped in and out of memory (incurring expensive I/O operations).
+(Tea) - The parent process will not block waiting for the child process to conclude.
+(Tea) - A state is considered safe if:
+   - It is possible for all processes to finish executing.
+   - Routes to a deadlock situation do not matter.
+   - The only thing that matters is if there is a sequence out that avoids deadlock.
+Teabean [4:25 PM]
+I believe it's casting the address of 'id' as a void* type, which the original programmer did for somewhat questionable reasons.
+
+The main goal of all that void* stuff is that you're trying to get a few bits of data passed to a pthread_create(), but the function can only accept one argument of type void*.
+
+This also means you don't have to stick with the base implementation if it seems overwrought or confusing. Just get all the data you need encapsulated to a single object (be it a wrapper class like ThreadParam, a void* array, or something else), cast that object as a void*, and punt it to the pthread_create().
+
+Once the pthread_create() catches that argument, it'll have to unpack it. If you have a wrapper like ThreadParam holding these values, that will look something like;
+
+```Shop* localShopAddress = caughtThreadParam.shopAddress;
+int localThreadID = caughtThreadParam.ID;
+int localBarberSpeed = caughtThreadParam.barberSpeed;```
+
+But of course we would leave the implementation to you. I would advise immediately storing the contents of the ThreadParam object to a locally scoped copy once you catch it, this in relation to how the ThreadParam object might be deleted or deallocated elsewhere in the program.
+
+To confirm that you're passing and receiving properly, I would recommend a series of cerr statements that read what your driver is attempting to pass, as well as an additional set displaying what the barber and customer functions are receiving. (edited)
+
+Teabean [3:10 PM]
+-Lpthread
+
+Teabean [1:41 PM]
+Study session this Saturday on the Seattle side for those interested. Details on the #studysessions channel.
+
+Teabean [4 days ago]
+If it's always the last barber, check to make sure that the ID isn't tethered to a reference (like ID = &i). What might be happening is that if the ID is tethered to the for loop's iteration by reference, that value could be anything as soon as the for loop completes and goes out of scope (and that might be before the thread is able to use/assign/store the ID).
+
+That's the only thing that comes to mind at the moment...
+
+I like making local copies when passing stuff if I can, then checking the local copy values, then assign the values, then check the assigned values. It's not as efficient, but it does provide me a bit more confidence that wonkiness from outside a function hasn't crept in.
+
+Teabean [3 days ago]
+I've had issues with outputs being garbled, yes, though not between program runs. Most of them resolved when I changed everything in the program from cout to cerr, and resolved even further (plus there was a substantive performance boost) when I changed the cerrs to dump into a stringstream that was outputed at the end.
+
+Turns out that the act of writing to the console is actually quite slow!
+
+When I did have problems between runs of the program (that is, the difference between the program running and not at all), it was due to improper initialization of the condition flags.
+
+Teabean [7:00 PM]
+Here's an interesting set of outputs:
+```Barber  [0] goes home.
+   Served : 44 customers
+   Clocked: 463529 usec
+   Average: 10534.8 usec / customer
+
+Barber  [1] goes home.
+   Served : 44 customers
+   Clocked: 465472 usec
+   Average: 10578.9 usec / customer
+
+Barber  [2] goes home.
+   Served : 43 customers
+   Clocked: 458583 usec
+   Average: 10664.7 usec / customer
+
+Barber  [3] goes home.
+   Served : 43 customers
+   Clocked: 460710 usec
+   Average: 10714.2 usec / customer
+
+Barber  [4] goes home.
+   Served : 42 customers
+   Clocked: 456384 usec
+   Average: 10866.3 usec / customer
+
+Barber  [5] goes home.
+   Served : 42 customers
+   Clocked: 460190 usec
+   Average: 10956.9 usec / customer
+
+Barber  [6] goes home.
+   Served : 41 customers
+   Clocked: 453543 usec
+   Average: 11062 usec / customer
+
+Barber  [7] goes home.
+   Served : 40 customers
+   Clocked: 458624 usec
+   Average: 11465.6 usec / customer
+
+Barber  [8] goes home.
+   Served : 39 customers
+   Clocked: 452533 usec
+   Average: 11603.4 usec / customer
+
+Barber  [9] goes home.
+   Served : 38 customers
+   Clocked: 455156 usec
+   Average: 11977.8 usec / customer
+
+Barber  [10] goes home.
+   Served : 34 customers
+   Clocked: 455586 usec
+   Average: 13399.6 usec / customer
+
+Barber  [11] goes home.
+   Served : 27 customers
+   Clocked: 459510 usec
+   Average: 17018.9 usec / customer
+
+Barber  [12] goes home.
+   Served : 17 customers
+   Clocked: 449080 usec
+   Average: 26416.5 usec / customer
+
+Barber  [13] goes home.
+   Served : 4 customers
+   Clocked: 430406 usec
+   Average: 107602 usec / customer
+
+Barber  [14] goes home.
+   Served : 2 customers
+   Clocked: 308373 usec
+   Average: 154186 usec / customer```
+
+
+Teabean [7:07 PM]
+The program above, when seating a customer, just scans from Barber[0] through to the end and seats the customer at the first available chair (and it's running with a BarberSpeed of 10,000).
+
+For a fun (in the @thurman -esque sense) exercise, can you postulate why the average service time might smoothly range from ~10500 usec / customer at barber[0] to ~150000 usec / customer at barber[14]? (edited)
+
+Teabean [3 days ago]
+I was planning to just drop DEFAULT_CHAIRS (3) in at the beginning if the chairs were set to 0, but I reckon I better re-read the assignment spec to figure out what to do there.
+
+Thanks for the reminder!
+
+Teabean [2 days ago]
+Addressing this last night, I modified the customer exit without service requirements with a couple if-else clauses. It just ensured that shops with 0 wait-chairs had a different failure condition than those with non-zero wait chairs.
+
+Teabean [1 day ago]
+I'm requiring about 60 chairs with 1 barber to service all customers.
+
+2 barbers requires 1-2 chairs to have a fairly good guarantee of service, and I've never seen 3 barbers fail.
+
+Teabean [9:25 PM]
+Just FYI, RE: Points missed on the n-1 argv[2] comment for Assignment 1:
+(5) points would be deducted if the program behavior hardcoded the child fork()s based on argv[2] being 1, 2, or 4. The specification (might have?) required that the core number also support other numbers like 5, 11, 20, etc.
+
+Teabean [14 hours ago]
+If you implemented assignment 1 and it generates argv[2]-1 child processes with any arbitrary value of argv[2], you can probably ping her and the graders an email explaining the issue. Prof. Parsons seemed pretty receptive and reasonable about it when I spoke to her.
+
+If you wanted to make it easier on her to correct, just drop a "cerr << "Fork()ing... << endl;" right prior to any call to fork();, then provide instructions to run piping to grep a bit like so:
+```./a.out 2000 <n> | grep "Fork()ing"```
+You should get 3 lines of "Fork()ing" for n==4, 4 lines for n==5, etc.
+
+Alternatively, it sounded also like she knew a mistake had been made with that part of the rubric and was in the middle of making corrections, so you could also just hang tight for a bit and see if the points come back on their own. :stuck_out_tongue: (edited)
+Teabean [6 hours ago]
+@thurman I delegated 1/n of the points and 1 core to the parent process, then passed everything else to the child.
+
+```1/4 points
+1 core
+      \
+       \
+        3/4 points
+        3 cores```
+
+
+Eventually it gets to be like so:
+```1/4 points
+1 core
+      \
+       \
+        1/4 points
+        1 cores
+             \
+               \
+                1/4 points
+                1 core
+                      \
+                       \
+                        1/4 points
+                        1 cores```
+
+
+And that works for arbitrary n values, since it just goes and goes until there are no more spare cores to delegate. (edited)
+Teabean [1 minute ago]
+No updates, though Prof. Parson will refund the points if your program as-submitted does generate the correct number of sub-processes.
+
+I would hit up an office hour and speak with the grader first (add the cerr << "Fork()ing..." << endl;) line as detailed above and run with:
+```./a.out 2000 <some arbitrary number> | grep "Fork()ing"```
+If the grader remains unconvinced and still believes that the point deduction is justified, just smile, nod, thank her for her time, and elevate the issue to Prof. Parsons.
+
+
+Teabean [< 1 minute ago]
+Just be double double sure that it forks N-1 times before going there, of course. :stuck_out_tongue:
+
+Teabean [10:11 PM]
+uploaded this image: Image uploaded from iOS 
+
+
+
+Teabean [12:04 AM]
+I think most groups just turned it in physically.
+
+Teabean [10:57 AM]
+Oh, good catch! The "wait for cut to complete" at the end of custVisit is just a cout/cerr output, it's not an actual call to wait().
+
+Which means that the wait() at the top of custLeave is the one that really matters, and it must use a semaphore (swap out the existing while() with an if() - it'll work way better) for the event that the custLeave() gets reached before byeCust().
+
+byeCust and custLeave otherwise generate a classic race condition, as both the barber and the customer are just charging forward.
+
+Teabean [10:57 AM]
+Read em and weep, baby! :smile:
+```teabean@DESKTOP-PCUNEGA:~$ for x in {8..12}; do ./lab3 hamlet.txt $((2**x)); done
+Bytes: 256
+     Unix read's elapsed time   = 4521
+Standard fread's elapsed time   = 2347
+Std fread fast's elapsed time   = 309
+
+Bytes: 512
+     Unix read's elapsed time   = 2490
+Standard fread's elapsed time   = 2972
+Std fread fast's elapsed time   = 189
+
+Bytes: 1024
+     Unix read's elapsed time   = 1602
+Standard fread's elapsed time   = 1158
+Std fread fast's elapsed time   = 174
+
+Bytes: 2048
+     Unix read's elapsed time   = 898
+Standard fread's elapsed time   = 712
+Std fread fast's elapsed time   = 185
+
+Bytes: 4096
+     Unix read's elapsed time   = 368
+Standard fread's elapsed time   = 354
+Std fread fast's elapsed time   = 180```
+Mostly this:
+```for x in {8..12}; do ./lab3 hamlet.txt $((2**x)); done```
+
+Teabean [12:30 PM]
+commented on thurman’s file Lab 3 grading rubric.png
+@thurman - So I poked around on the site's source code and it appears that "Description of Criterion" is the placeholder text where an instructor is supposed to... well... enter a description of the "criterion" (that being Canvas' term for 'Learning Outcomes').
+
+Basically, either that criterion doesn't exist or it wasn't filled out. :stuck_out_tongue:
+
+Teabean [12:31 PM]
+  ```<td class="criterion_description hover-container pad-box-micro">
+    <div class="container">
+      <div class="links editing">
+          <a href="#" class="edit_criterion_link"><i class="icon-edit standalone-icon"></i><span class="screenreader-only">Edit criterion description</span></a>
+        <a href="#" class="delete_criterion_link"><i class="icon-trash standalone-icon"></i><span class="screenreader-only">Delete criterion row</span></a>
+      </div>
+      <div class="description_content">
+        <span class="outcome_sr_content" aria-hidden="true">
+          <i class="learning_outcome_flag icon-outcomes" aria-hidden="true"></i>
+          <span class="screenreader-only">This criterion is linked to a Learning Outcome</span>
+        </span>
+        <span class="description criterion_description_value">Description of criterion</span>
+        <span class="learning_outcome_id" style="display: none;"></span>
+        <span class="criterion_id" style="display: none;">158756_5688</span>
+          <div class="long_description small_description"></div>
+        <div style="display: none;" class="long_description_holder editing empty">
+          <a href="#" class="long_description_link hidden">view longer description</a>
+          <textarea class="long_description" aria-label="Long Description" style="display: none;"></textarea>
+        </div>
+        <div class="hide_when_learning_outcome hidden">
+          <div class="criterion_use_range_div editing">
+            <label>Range
+              <input type="checkbox" class="criterion_use_range" /></label>
+          </div>
+        </div>
+        <div class="threshold">
+          threshold:
+          <span class="mastery_points"></span> pts
+        </div>
+      </div>
+
+    </div>
+  </td>```
+Teabean [12:32 PM]
+Oops, I think I just figured it out. It's Program Outputs.
+
+Teabean [12:33 PM]
+INCLUDE YOUR PROGRAM OUTPUTS IN THE .ZIP FILE FOR LAB3
+That's probably the mystery criterion.
+The assignment page should read:
+```Source code   4.0 pts
+Comments and error checking   1.0 pts
+Execution Output   1.0 pts```
+
+Teabean [12:41 PM]
+Midnight tonight.
+
+Teabean [12:52 PM]
+Oh nice, thanks for checking on that, Maria!
+
+Teabean [1:00 PM]
+Two weeks from Exam 3, so I'm spooling up the Exam 3 study guide.
+https://docs.google.com/document/d/1sT8PRkxr3raadxGAX7ooZ_Rv40ecuzx_Z2MqlFIAuxE/edit?usp=sharing
+
+Teabean Today at 2:32 PM 
+It's a bug on Canvas; instructors can't change the criteria without generating a new assignment and things get complicated if a new assignment is generated after assignments have already been submitted.
+
+So just pay heed to the lab spec and this alert and be sure to include program outputs for that bright, shiny point! :smile:
+
+Teabean [11:22 AM]
+That's the fast read method. If you want results more like expected, swap line 107/108:
+        ```// Establish the number of reads
+        readCounter = fread( stdbuffer, bytes, numReads, stdfd );```
+with
+      ```while( fread( stdbuffer, bytes, 1, stdfd ) != 0 ) {
+         // Do nothing
+      }```
+(edited)
+Oops, that should be stdbuffer, not 'littlebuffer'
+Or if you wanted it even shorter, this should also work:
+      ```while( fread( stdbuffer, bytes, 1, stdfd ) ) {
+         // Do nothing
+      }```
+Since fread() a single packet should return 1, which can be interpreted as 'true'
+(But check me on that)
+
+Teabean [11:31 AM]
+```// (+) --------------------------------|
+// #fread(char* arg1, int arg2, int arg3, FILE* arg4)
+// ------------------------------------|
+// Desc:    Reads a file
+// Params:  char* arg1 - The buffer to read into
+//          int arg2 - The byte size packet to read
+//          int arg3 - The number of reads to attempt
+//          FILE* arg4 - The file to read from
+// PreCons: None
+// PosCons: The current position of the reader has been advanced to the end
+//          of the last successful read attempt
+// RetVal:  The number of elements successfully read```
+Yup! Setting a single buffer of [filesize] size saves your program the hassle of dumping the buffer contents and jamming new stuff in (I think that was the 'rebuffering' mentioned in class). Consequently, write operations are a bit faster.
+Bytes x numReads may be slightly higher than the filesize. Consider:
+
+```Filesize: 510 bytes
+Bytes   : 512
+NumReads: 1```
+
+Personally, I'm not entirely clear on what happens at the last read attempt, though I sort of presume that it succeeds and that attempting an additional read after that would fail. (edited)
+
+
+Teabean [2:46 PM]
+Just confirmed: the final (partial) read will return 0. Attempting to overread a file will return the number of complete reads.
+
+For example: If a file is 511b and we
+```fread(buffer, 4, 128, file)```
+
+Then the return value is 127, not the 128 you might expect.
+
